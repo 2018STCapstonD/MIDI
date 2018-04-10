@@ -9,9 +9,8 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-
         //splashActivity 추가 2018-03-29 YH
-        <activity android:name=".SplashActivity"
+        <activity android:name="com.midi.midi.SplashActivity"
             android:theme="@style/SplashActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -20,12 +19,9 @@
         </activity>
 
 
-        <activity android:name=".MainActivity">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
+        <activity android:name=".MainActivity"
+            android:label="Midi">
 
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
         </activity>
     </application>
     <uses-permission android:name="android.permission.INTERNET"/>
