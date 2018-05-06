@@ -56,6 +56,25 @@
 
     </LinearLayout>
 
+    <!--playlist 레이아웃 18/05/07_H-->
+    <RelativeLayout
+        android:id="@+id/activity_main"
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:tools="http://schemas.android.com/tools"
+        android:layout_width="match_parent"
+        android:layout_height="150dp"
+
+        tools:context="com.midi.midi.MainActivity">
+
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/recyclerview"
+            android:layout_width="match_parent"
+            android:layout_height="150dp"
+            android:scrollbars="vertical"/>
+
+    </RelativeLayout>
+    <!--playlist 레이아웃 끝_H-->
+
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent">

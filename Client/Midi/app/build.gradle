@@ -28,5 +28,8 @@ dependencies {
     compile 'com.android.support.constraint:constraint-layout:1.0.2'
     // 카카오 로그인 sdk를 사용하기 위해 필요.
     compile group: 'com.kakao.sdk', name: 'usermgmt', version: project.KAKAO_SDK_VERSION
+    compile 'com.android.support:recyclerview-v7:27.+'
+    compile 'com.squareup.picasso:picasso:2.5.2'
+//    18/05/07 recycleview,앨범아트 위해 라이브러리 추가_H
     testCompile 'junit:junit:4.12'
 }

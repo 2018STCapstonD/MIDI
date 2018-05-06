@@ -16,6 +16,8 @@ import android.support.v4.app.LoaderManager;
 import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.LinearLayoutManager;
 import android.util.Log;
 
 import com.kakao.auth.helper.Base64;
@@ -23,6 +25,10 @@ import com.kakao.auth.helper.Base64;
 import java.security.MessageDigest;
 
 public class MainActivity extends AppCompatActivity {
+    private final static int LOADER_ID = 0x001;
+
+    private RecyclerView mRecyclerView;
+    private AudioAdapter mAdapter;
 
     private static final String TAG = MainActivity.class.getSimpleName();
 
@@ -55,6 +61,14 @@ public class MainActivity extends AppCompatActivity {
         else {
             getAudioListFromMediaDatabase();
         }
+//        RecyclerView와 AudioAdapter를 연결하여 실제 데이터를 표시 추가_18/05/07_H
+        mRecyclerView = (RecyclerView) findViewById(R.id.recyclerview);
+        mAdapter = new AudioAdapter(this, null);
+        mRecyclerView.setAdapter(mAdapter);
+        LinearLayoutManager layoutManager = new LinearLayoutManager(this);
+        layoutManager.setOrientation(LinearLayoutManager.VERTICAL);
+        mRecyclerView.setLayoutManager(layoutManager);
+//
     }
 
     @Override
@@ -87,16 +101,19 @@ public class MainActivity extends AppCompatActivity {
 
             @Override
             public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
+//                파일 불러와서 로그찍기_18/05/07_H
                 if (data != null && data.getCount() > 0) {
                     while (data.moveToNext()) {
                         Log.i(TAG, "Title:" + data.getString(data.getColumnIndex(MediaStore.Audio.Media.TITLE)));
                     }
                 }
+//만들어진 AudioAdapter에 LoaderManager를 통해 불러온 오디오 목록이 담긴 Cursor를 적용_18/05/07_H
+                mAdapter.swapCursor(data);
             }
 
             @Override
             public void onLoaderReset(Loader<Cursor> loader) {
-
+                mAdapter.swapCursor(null);
             }
         });
     }
