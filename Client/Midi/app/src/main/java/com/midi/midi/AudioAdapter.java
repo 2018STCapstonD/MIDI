@@ -35,6 +35,7 @@ import android.widget.TextView;
 
 import com.squareup.picasso.Picasso;
 
+import java.util.ArrayList;
 import java.util.List;
 
 
@@ -79,6 +80,17 @@ public class AudioAdapter extends CursorRecyclerViewAdapter<RecyclerView.ViewHol
         }
     }
 
+    //player기능 추가_정원0508
+    public ArrayList<Long> getAudioIds(){
+        int count = getItemCount();
+        ArrayList<Long> audioIds = new ArrayList<>();
+        for(int i=0; i < count; i++){
+            audioIds.add(getItemId(i));
+        }
+        return audioIds;
+    }
+    //
+
     private class AudioViewHolder extends RecyclerView.ViewHolder {
         private final Uri artworkUri = Uri.parse("content://media/external/audio/albumart");
         private ImageView mImgAlbumArt;
@@ -88,6 +100,7 @@ public class AudioAdapter extends CursorRecyclerViewAdapter<RecyclerView.ViewHol
         private AudioItem mItem;
         private int mPosition;
 
+        //setOnClickListener수정_정원0508
         private AudioViewHolder(View view) {
             super(view);
             mImgAlbumArt = (ImageView) view.findViewById(R.id.img_albumart);
@@ -97,7 +110,8 @@ public class AudioAdapter extends CursorRecyclerViewAdapter<RecyclerView.ViewHol
             view.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    // ..
+                    AudioApplication.getmInstance().getServiceInterface().setPlayList(getAudioIds()); //재생목록 등록
+                    AudioApplication.getmInstance().getServiceInterface().play(mPosition); //선택한 오디오재생
                 }
             });
         }

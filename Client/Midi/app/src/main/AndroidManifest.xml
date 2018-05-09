@@ -2,6 +2,8 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.midi.midi">
 
+    <!--android:name=".AudioApplication"-->
+    <!--application에 위의 주석 부분 추가해야함..!-->
     <application
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
@@ -10,7 +12,8 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         android:name=".GlobalApplication">
-        //splashActivity 추가 2018-03-29 YH
+
+        <!--splashActivity 추가 2018-03-29 YH-->
 
         <activity android:name="com.midi.midi.SplashActivity"
             android:theme="@style/SplashActivity">
@@ -35,5 +38,15 @@
     </application>
     <uses-permission android:name="android.permission.INTERNET"/>
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
-    //퍼미션 인터넷, 미디어장소 동적 권한요청
+    <!--퍼미션 인터넷, 미디어장소 동적 권한요청-->
+
+    <!--wakeMode퍼미션 추가_정원05/08-->
+    <!--시스템이 휴면모드로 진입하게 될 시 player에 생길 수있는 문제 예방-->
+    <uses-permission android:name="android.permission.WAKE_LOCK"/>
+    <service
+        android:name=".AudioService"
+        android:enabled="true"
+        android:exported="true">
+    </service>
+
 </manifest>
