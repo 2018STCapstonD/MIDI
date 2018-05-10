@@ -9,6 +9,9 @@ import android.database.Cursor;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
+import android.os.StrictMode;
 import android.provider.MediaStore;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
@@ -19,9 +22,15 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.LinearLayoutManager;
 import android.util.Log;
+import android.view.View;
+import android.widget.Button;
 
 import com.kakao.auth.helper.Base64;
 
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
+import java.io.PrintWriter;
+import java.net.Socket;
 import java.security.MessageDigest;
 
 public class MainActivity extends AppCompatActivity {
@@ -30,12 +39,28 @@ public class MainActivity extends AppCompatActivity {
     private RecyclerView mRecyclerView;
     private AudioAdapter mAdapter;
 
+    // 소켓통신 관련 변수
+    private Socket clientSocket;
+    private BufferedReader socketIn;
+    private PrintWriter socketOut;
+    private int port = 37771;
+    private final String ip = "117.17.198.39";
+    private MyThread myThread;
+    private MyHandler myHandler;
+
+    //
+
     private static final String TAG = MainActivity.class.getSimpleName();
 
     @Override
     protected void onCreate(final Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
+        StrictMode.setThreadPolicy(policy);
+
+
         // 카카오 키해시 생성
         // 실행시 로그에서 나오는 키를 알려주세요!!
         try {
@@ -61,6 +86,27 @@ public class MainActivity extends AppCompatActivity {
         else {
             getAudioListFromMediaDatabase();
         }
+
+//      소켓통신
+        Button sendDataBtn = (Button) findViewById(R.id.sendDataBtn);
+        sendDataBtn.setOnClickListener(new View.OnClickListener(){
+            @Override
+            public void onClick(View view) {
+                try{
+                    clientSocket = new Socket(ip, port);
+                    socketIn = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
+                    socketOut = new PrintWriter(clientSocket.getOutputStream(), true);
+                }catch(Exception e){
+                    e.printStackTrace();
+                }
+                myHandler = new MyHandler();
+                myThread = new MyThread();
+                myThread.start();
+
+                socketOut.println(123);
+            }
+        });
+
 //        RecyclerView와 AudioAdapter를 연결하여 실제 데이터를 표시 추가_18/05/07_H
         mRecyclerView = (RecyclerView) findViewById(R.id.recyclerview);
         mAdapter = new AudioAdapter(this, null);
@@ -116,5 +162,27 @@ public class MainActivity extends AppCompatActivity {
                 mAdapter.swapCursor(null);
             }
         });
+    }
+
+    //소켓통신 관련
+    class MyThread extends Thread{
+        @Override
+        public void run(){
+            while(true){
+                try{
+                    String data = socketIn.readLine();
+                    Message msg = myHandler.obtainMessage();
+                    msg.obj = data;
+                    myHandler.sendMessage(msg);
+                }
+                catch(Exception e){
+                    e.printStackTrace();
+                }
+            }
+        }
+    }
+    class MyHandler extends Handler{
+        @Override
+        public void handleMessage(Message msg){}
     }
 }
