@@ -28,7 +28,9 @@ import android.widget.Button;
 import com.kakao.auth.helper.Base64;
 
 import java.io.BufferedReader;
+import java.io.IOException;
 import java.io.InputStreamReader;
+import java.io.InterruptedIOException;
 import java.io.PrintWriter;
 import java.net.Socket;
 import java.security.MessageDigest;
@@ -104,6 +106,8 @@ public class MainActivity extends AppCompatActivity {
                 myThread.start();
 
                 socketOut.println(123);
+
+                myThread.interrupt();
             }
         });
 
@@ -166,9 +170,10 @@ public class MainActivity extends AppCompatActivity {
 
     //소켓통신 관련
     class MyThread extends Thread{
+        boolean flag = true;
         @Override
         public void run(){
-            while(true){
+            while(flag){
                 try{
                     String data = socketIn.readLine();
                     Message msg = myHandler.obtainMessage();
@@ -178,6 +183,17 @@ public class MainActivity extends AppCompatActivity {
                 catch(Exception e){
                     e.printStackTrace();
                 }
+            }
+        }
+        @Override
+        public void interrupt(){
+            try{
+                flag = false;
+                socketIn.close();
+                socketOut.close();
+                clientSocket.close();
+            }catch(Exception e){
+                e.printStackTrace();
             }
         }
     }
