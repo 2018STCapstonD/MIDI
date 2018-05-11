@@ -6,6 +6,7 @@ import android.database.Cursor;
 import android.media.AudioManager;
 import android.media.MediaPlayer;
 import android.net.Uri;
+import android.os.Binder;
 import android.os.IBinder;
 import android.os.PowerManager;
 import android.provider.MediaStore;
@@ -24,7 +25,7 @@ public class AudioService extends Service {
     private boolean isPrepared;
 
 
-    public class AudioServiceBinder extends IBinder {
+    public class AudioServiceBinder extends Binder {
         AudioService getService() {
             return AudioService.this;
         }

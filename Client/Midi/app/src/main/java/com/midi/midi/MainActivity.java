@@ -70,7 +70,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, 1000);
             } else {
                 // READ_EXTERNAL_STORAGE 에 대한 권한이 있음.
-                getAudioListFromMediaDatabase();
+                getAudioListFromMediaDatabase(); //여기
             }
         }
         // OS가 Marshmallow 이전일 경우 권한체크를 하지 않는다.
@@ -124,7 +124,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
         if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
             // READ_EXTERNAL_STORAGE 에 대한 권한 획득.
-            getAudioListFromMediaDatabase();
+            getAudioListFromMediaDatabase(); //여기
         }
     }
 

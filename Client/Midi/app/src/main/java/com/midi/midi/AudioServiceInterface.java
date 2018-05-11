@@ -15,13 +15,13 @@ import java.util.ArrayList;
  */
 
 public class AudioServiceInterface {
-    private ServiceConection mServiceConnection;
+    private ServiceConnection mServiceConnection;
     private AudioService mService;
 
     public AudioServiceInterface(Context context) {
-        mServiceConnection  new ServiceConnection(){
+        mServiceConnection = new ServiceConnection() {
             @Override
-            public void onServiceConnected(ComponentName componentName, IBinder iBinder) {
+            public void onServiceConnected(ComponentName name, IBinder service) {
                 mService = ((AudioService.AudioServiceBinder) service).getService();
             }
 
