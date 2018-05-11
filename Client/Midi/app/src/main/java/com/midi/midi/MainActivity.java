@@ -117,6 +117,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 // 다음곡으로 이동
                 AudioApplication.getmInstance().getServiceInterface().forward();
                 break;
+        }
     }
 
     @Override
