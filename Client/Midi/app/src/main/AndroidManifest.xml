@@ -11,7 +11,7 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
-        android:name=".GlobalApplication">
+        android:name=".AudioApplication">
 
         <!--splashActivity 추가 2018-03-29 YH-->
 
@@ -48,5 +48,10 @@
         android:enabled="true"
         android:exported="true">
     </service>
+
+    <service
+        android:name=".AudioApplication">
+    </service>
+
 
 </manifest>
