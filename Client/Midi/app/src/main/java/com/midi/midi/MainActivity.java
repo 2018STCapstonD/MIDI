@@ -88,7 +88,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
         //player기능 추가_정원0508
         registerBroadcast();
-        updateUI();
         mImgAlbumArt = (ImageView) findViewById(R.id.img_albumart);
         mTxtTitle = (TextView) findViewById(R.id.txt_title);
         mBtnPlayPause = (ImageButton) findViewById(R.id.btn_play_pause);
@@ -96,6 +95,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         findViewById(R.id.btn_rewind).setOnClickListener(this);
         mBtnPlayPause.setOnClickListener(this);
         findViewById(R.id.btn_forward).setOnClickListener(this);
+        updateUI();
     }
 
     //player기능 추가_정원0508
