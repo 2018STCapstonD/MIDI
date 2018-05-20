@@ -2,6 +2,7 @@ package com.midi.midi;
 
 
 import android.Manifest;
+import android.content.Intent;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.content.pm.Signature;
@@ -49,6 +50,7 @@ public class MainActivity extends AppCompatActivity {
     private final String ip = "117.17.198.39";
     private MyThread myThread;
     private MyHandler myHandler;
+    private long kakao_id;
 
     //
 
@@ -62,6 +64,8 @@ public class MainActivity extends AppCompatActivity {
         StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
         StrictMode.setThreadPolicy(policy);
 
+        Intent intent = getIntent();
+        kakao_id = intent.getLongExtra("kakao_id",kakao_id);
 
         // 카카오 키해시 생성
         // 실행시 로그에서 나오는 키를 알려주세요!!
@@ -94,6 +98,9 @@ public class MainActivity extends AppCompatActivity {
         sendDataBtn.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View view) {
+                Log.d("kakao_id :", String.valueOf(kakao_id));
+                //서버가 열려있지 않아 임시로 주석처리
+                /*
                 try{
                     clientSocket = new Socket(ip, port);
                     socketIn = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
@@ -108,8 +115,10 @@ public class MainActivity extends AppCompatActivity {
                 socketOut.println(123);
 
                 myThread.interrupt();
+                */
             }
         });
+
 
 //        RecyclerView와 AudioAdapter를 연결하여 실제 데이터를 표시 추가_18/05/07_H
         mRecyclerView = (RecyclerView) findViewById(R.id.recyclerview);
