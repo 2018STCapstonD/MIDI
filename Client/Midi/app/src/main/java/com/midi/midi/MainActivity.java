@@ -25,6 +25,7 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.Toast;
 
 import com.kakao.auth.helper.Base64;
 
@@ -33,6 +34,7 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.InterruptedIOException;
 import java.io.PrintWriter;
+import java.net.InetSocketAddress;
 import java.net.Socket;
 import java.security.MessageDigest;
 
@@ -100,25 +102,25 @@ public class MainActivity extends AppCompatActivity {
             public void onClick(View view) {
                 Log.d("kakao_id :", String.valueOf(kakao_id));
                 //서버가 열려있지 않아 임시로 주석처리
-                /*
                 try{
-                    clientSocket = new Socket(ip, port);
+                    clientSocket = new Socket();
+                    clientSocket.connect(new InetSocketAddress(ip, port), 3000);
                     socketIn = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
                     socketOut = new PrintWriter(clientSocket.getOutputStream(), true);
+
+                    myHandler = new MyHandler();
+                    myThread = new MyThread();
+                    myThread.start();
+
+                    socketOut.println(kakao_id + ", ");
+
+                    myThread.interrupt();
                 }catch(Exception e){
+                    Toast.makeText(getApplicationContext(), "Internal Server Error", Toast.LENGTH_LONG).show();
                     e.printStackTrace();
                 }
-                myHandler = new MyHandler();
-                myThread = new MyThread();
-                myThread.start();
-
-                socketOut.println(123);
-
-                myThread.interrupt();
-                */
             }
         });
-
 
 //        RecyclerView와 AudioAdapter를 연결하여 실제 데이터를 표시 추가_18/05/07_H
         mRecyclerView = (RecyclerView) findViewById(R.id.recyclerview);
