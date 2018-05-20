@@ -101,7 +101,6 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 Log.d("kakao_id :", String.valueOf(kakao_id));
-                //서버가 열려있지 않아 임시로 주석처리
                 try{
                     clientSocket = new Socket();
                     clientSocket.connect(new InetSocketAddress(ip, port), 3000);
@@ -111,7 +110,7 @@ public class MainActivity extends AppCompatActivity {
                     myHandler = new MyHandler();
                     myThread = new MyThread();
                     myThread.start();
-
+                    //데이터 전송 부분
                     socketOut.println(kakao_id + ", ");
 
                     myThread.interrupt();
