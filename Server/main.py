@@ -19,7 +19,3 @@ while True:
         commandExecuter.startCommand(command)
     except Exception as e:
         print(e)
-
-# while True:
-#    time.sleep(3)
-#    andRaspTCP.sendAll("321\n")]
