@@ -3,9 +3,14 @@ package com.midi.midi;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 
 import com.kakao.auth.ISessionCallback;
 import com.kakao.auth.Session;
+import com.kakao.network.ErrorResult;
+import com.kakao.usermgmt.UserManagement;
+import com.kakao.usermgmt.callback.MeResponseCallback;
+import com.kakao.usermgmt.response.model.UserProfile;
 import com.kakao.util.exception.KakaoException;
 import com.kakao.util.helper.log.Logger;
 
@@ -15,16 +20,17 @@ import com.kakao.util.helper.log.Logger;
 
 public class LoginActivity  extends Activity {
     private SessionCallback callback;
+    private long kakao_id;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
         setContentView(R.layout.activity_login);
+        requestMe();
 
         callback = new SessionCallback();
         Session.getCurrentSession().addCallback(callback);
-
     }
 
     @Override
@@ -60,8 +66,34 @@ public class LoginActivity  extends Activity {
     protected void redirectSignupActivity() {       //세션 연결 성공 시 SignupActivity로 넘김
         final Intent intent = new Intent(this, MainActivity.class);
         intent.setFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
+        intent.putExtra("kakao_id", kakao_id);
         startActivity(intent);
         finish();
+    }
+
+    public void requestMe() {
+        //유저의 정보 받아오기
+        UserManagement.getInstance().requestMe(new MeResponseCallback() {
+            @Override
+            public void onFailure(ErrorResult errorResult) {
+//                super.onFailure(errorResult);
+            }
+            @Override
+            public void onSessionClosed(ErrorResult errorResult) {
+                //세션이 닫혔을 시
+            }
+
+            @Override
+            public void onNotSignedUp() {
+                //카카오톡 회원이 아닐시
+            }
+
+            @Override
+            public void onSuccess(UserProfile result) {
+                Log.e("kakao_id : ", String.valueOf(result.getId()));
+                kakao_id = result.getId();
+            }
+        });
     }
 
 }
