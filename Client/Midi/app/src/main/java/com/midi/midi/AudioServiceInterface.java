@@ -19,12 +19,12 @@ public class AudioServiceInterface {
     private AudioService mService;
 
     public AudioServiceInterface(Context context) {
+
         mServiceConnection = new ServiceConnection() {
             @Override
             public void onServiceConnected(ComponentName name, IBinder service) {
                 mService = ((AudioService.AudioServiceBinder) service).getService();
             }
-
             @Override
             public void onServiceDisconnected(ComponentName componentName) {
                 mServiceConnection = null;
@@ -64,7 +64,8 @@ public class AudioServiceInterface {
         }
     }
 
-    public void togglePlay() {
+    public void togglePlay()
+    {
         if(isPlaying()) {
             mService.pause();
         } else {

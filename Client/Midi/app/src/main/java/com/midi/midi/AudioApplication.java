@@ -14,7 +14,8 @@ public class AudioApplication extends GlobalApplication{
     private AudioServiceInterface mInterface;
 
     @Override
-    public void onCreate() {
+    public void onCreate()
+    {
         super.onCreate();
         mInstance = this;
         mInterface = new AudioServiceInterface(getApplicationContext());

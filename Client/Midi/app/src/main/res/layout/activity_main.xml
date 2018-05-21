@@ -6,22 +6,23 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:orientation="vertical"
     android:paddingBottom="@dimen/activity_vertical_margin"
-    android:paddingLeft="@dimen/activity_horizontal_margin"
+    android:paddingLeft="@dimen/activity_vertical_margin"
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
-    tools:context="com.midi.midi.MainActivity">
+    tools:context="com.midi.midi.MainActivity"
+    android:weightSum="1">
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="193dp"
         android:orientation="vertical">
 
-        <Button
+       <!-- <Button
             android:id="@+id/backBtn"
-            android:layout_width="61dp"
-            android:layout_height="wrap_content"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
             android:layout_gravity="end"
-            android:text="-" />
+            android:text="<-" /> -->
 
 
         <Button
@@ -39,6 +40,12 @@
 
     </LinearLayout>
 
+    <ProgressBar
+        android:id="@+id/progressBar"
+        style="?android:attr/progressBarStyleHorizontal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -54,9 +61,9 @@
 
         <Button
             android:id="@+id/youtubeButton"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="play" />
+            android:text="play list" />
 
     </LinearLayout>
 
@@ -73,7 +80,7 @@
         <android.support.v7.widget.RecyclerView
             android:id="@+id/recyclerview"
             android:layout_width="match_parent"
-            android:layout_height="150dp"
+            android:layout_height="170dp"
             android:scrollbars="vertical"/>
 
     </RelativeLayout>
@@ -84,18 +91,19 @@
     <LinearLayout
         android:id="@+id/lin_miniplayer"
         android:layout_width="match_parent"
-        android:layout_height="?attr/actionBarSize"
+        android:layout_height="58dp"
         android:background="@android:color/darker_gray"
         android:gravity="center_vertical"
         android:orientation="horizontal">
 
         <ImageView
             android:id="@+id/img_albumart"
-            android:layout_width="50dp"
-            android:layout_height="50dp"
+            android:layout_width="38dp"
+            android:layout_height="45dp"
             android:layout_marginLeft="5dp"
             android:scaleType="fitXY"
-            android:src="@drawable/empty_albumart"/>
+            android:src="@drawable/empty_albumart"
+            android:layout_weight="0.03" />
 
         <TextView
             android:id="@+id/txt_title"
