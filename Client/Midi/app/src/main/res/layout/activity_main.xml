@@ -32,6 +32,14 @@
             android:text="Recommended Play List" />
 
 
+        <Button
+            android:id="@+id/sendDataBtn"
+            android:layout_marginLeft="150dp"
+            android:layout_width="100dp"
+            android:layout_height="wrap_content"
+            android:text="서버로 전송" />
+
+
         <TextView
             android:id="@+id/tv"
             android:layout_width="wrap_content"

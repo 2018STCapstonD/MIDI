@@ -16,6 +16,9 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.PersistableBundle;
+import android.os.Handler;
+import android.os.Message;
+import android.os.StrictMode;
 import android.provider.MediaStore;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -31,10 +34,19 @@ import android.view.View;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Button;
+import android.widget.Toast;
 
 import com.kakao.auth.helper.Base64;
 import com.squareup.picasso.Picasso;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.InterruptedIOException;
+import java.io.PrintWriter;
+import java.net.InetSocketAddress;
+import java.net.Socket;
 import java.security.MessageDigest;
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener{
@@ -46,12 +58,31 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private TextView mTxtTitle;
     private ImageButton mBtnPlayPause;
 
+    // 소켓통신 관련 변수
+    private Socket clientSocket;
+    private BufferedReader socketIn;
+    private PrintWriter socketOut;
+    private int port = 37771;
+    private final String ip = "117.17.198.39";
+    private MyThread myThread;
+    private MyHandler myHandler;
+    private long kakao_id;
+
+    //
+
     private static final String TAG = MainActivity.class.getSimpleName();
 
     @Override
     protected void onCreate(final Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
+        StrictMode.setThreadPolicy(policy);
+
+        Intent intent = getIntent();
+        kakao_id = intent.getLongExtra("kakao_id",kakao_id);
+
         // 카카오 키해시 생성
         // 실행시 로그에서 나오는 키를 알려주세요!!
         try {
@@ -77,6 +108,33 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         else {
             getAudioListFromMediaDatabase();
         }
+
+//      소켓통신
+        Button sendDataBtn = (Button) findViewById(R.id.sendDataBtn);
+        sendDataBtn.setOnClickListener(new View.OnClickListener(){
+            @Override
+            public void onClick(View view) {
+                Log.d("kakao_id :", String.valueOf(kakao_id));
+                try{
+                    clientSocket = new Socket();
+                    clientSocket.connect(new InetSocketAddress(ip, port), 3000);
+                    socketIn = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
+                    socketOut = new PrintWriter(clientSocket.getOutputStream(), true);
+
+                    myHandler = new MyHandler();
+                    myThread = new MyThread();
+                    myThread.start();
+                    //데이터 전송 부분
+                    socketOut.println(kakao_id + ", ");
+
+                    myThread.interrupt();
+                }catch(Exception e){
+                    Toast.makeText(getApplicationContext(), "Internal Server Error", Toast.LENGTH_LONG).show();
+                    e.printStackTrace();
+                }
+            }
+        });
+
 //        RecyclerView와 AudioAdapter를 연결하여 실제 데이터를 표시 추가_18/05/07_H
         mRecyclerView = (RecyclerView) findViewById(R.id.recyclerview);
         mAdapter = new AudioAdapter(this, null);
@@ -208,4 +266,37 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         unregisterReceiver(mBroadcastReceiver);
     }
 
+    //소켓통신 관련
+    class MyThread extends Thread{
+        boolean flag = true;
+        @Override
+        public void run(){
+            while(flag){
+                try{
+                    String data = socketIn.readLine();
+                    Message msg = myHandler.obtainMessage();
+                    msg.obj = data;
+                    myHandler.sendMessage(msg);
+                }
+                catch(Exception e){
+                    e.printStackTrace();
+                }
+            }
+        }
+        @Override
+        public void interrupt(){
+            try{
+                flag = false;
+                socketIn.close();
+                socketOut.close();
+                clientSocket.close();
+            }catch(Exception e){
+                e.printStackTrace();
+            }
+        }
+    }
+    class MyHandler extends Handler{
+        @Override
+        public void handleMessage(Message msg){}
+    }
 }
