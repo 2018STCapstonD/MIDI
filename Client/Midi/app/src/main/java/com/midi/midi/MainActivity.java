@@ -48,6 +48,8 @@ import java.io.PrintWriter;
 import java.net.InetSocketAddress;
 import java.net.Socket;
 import java.security.MessageDigest;
+import java.util.ArrayList;
+import java.util.List;
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener{
     private final static int LOADER_ID = 0x001;
@@ -67,6 +69,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private MyThread myThread;
     private MyHandler myHandler;
     private long kakao_id;
+    private static ArrayList<String[]> musicList;
+
 
     //
 
@@ -114,19 +118,20 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         sendDataBtn.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View view) {
-                Log.d("kakao_id :", String.valueOf(kakao_id));
                 try{
                     clientSocket = new Socket();
                     clientSocket.connect(new InetSocketAddress(ip, port), 3000);
                     socketIn = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
                     socketOut = new PrintWriter(clientSocket.getOutputStream(), true);
-
+                    for(int i=0;i<musicList.size();i++){
+                       // Log.d("title : ", musicList.get(i)[0]);
+                       // Log.d("album : ", musicList.get(i)[1]);
+                        socketOut.printf(kakao_id + ", " + musicList.get(i)[0] + ", " + musicList.get(i)[1] + "\n");
+                    }
                     myHandler = new MyHandler();
                     myThread = new MyThread();
                     myThread.start();
                     //데이터 전송 부분
-                    socketOut.println(kakao_id + ", ");
-
                     myThread.interrupt();
                 }catch(Exception e){
                     Toast.makeText(getApplicationContext(), "Internal Server Error", Toast.LENGTH_LONG).show();
@@ -193,12 +198,12 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             public Loader<Cursor> onCreateLoader(int id, Bundle args) {
                 Uri uri = MediaStore.Audio.Media.EXTERNAL_CONTENT_URI;
                 String[] projection = new String[]{
-                        MediaStore.Audio.Media._ID,
                         MediaStore.Audio.Media.TITLE,
                         MediaStore.Audio.Media.ARTIST,
                         MediaStore.Audio.Media.ALBUM,
                         MediaStore.Audio.Media.ALBUM_ID,
                         MediaStore.Audio.Media.DURATION,
+                        MediaStore.Audio.Media._ID,
                         MediaStore.Audio.Media.DATA
                 };
                 String selection = MediaStore.Audio.Media.IS_MUSIC + " = 1";
@@ -210,8 +215,11 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
 //                파일 불러와서 로그찍기_18/05/07_H
                 if (data != null && data.getCount() > 0) {
+                    musicList = new ArrayList<String[]>();
                     while (data.moveToNext()) {
+                        musicList.add(new String[]{data.getString(data.getColumnIndex(MediaStore.Audio.Media.TITLE)) ,data.getString(data.getColumnIndex(MediaStore.Audio.Media.ALBUM)) });
                         Log.i(TAG, "Title:" + data.getString(data.getColumnIndex(MediaStore.Audio.Media.TITLE)));
+                        Log.i(TAG, "Album:" + data.getString(data.getColumnIndex(MediaStore.Audio.Media.ALBUM)));
                     }
                 }
 //만들어진 AudioAdapter에 LoaderManager를 통해 불러온 오디오 목록이 담긴 Cursor를 적용_18/05/07_H
