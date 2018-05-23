@@ -2,7 +2,12 @@ package com.midi.midi;
 
 
 import android.Manifest;
+import android.app.Application;
+import android.content.BroadcastReceiver;
+import android.content.ContentUris;
+import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.content.pm.Signature;
@@ -10,11 +15,13 @@ import android.database.Cursor;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.PersistableBundle;
 import android.os.Handler;
 import android.os.Message;
 import android.os.StrictMode;
 import android.provider.MediaStore;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.CursorLoader;
@@ -24,10 +31,14 @@ import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.LinearLayoutManager;
 import android.util.Log;
 import android.view.View;
+import android.widget.ImageButton;
+import android.widget.ImageView;
+import android.widget.TextView;
 import android.widget.Button;
 import android.widget.Toast;
 
 import com.kakao.auth.helper.Base64;
+import com.squareup.picasso.Picasso;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -38,11 +49,14 @@ import java.net.InetSocketAddress;
 import java.net.Socket;
 import java.security.MessageDigest;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements View.OnClickListener{
     private final static int LOADER_ID = 0x001;
 
     private RecyclerView mRecyclerView;
     private AudioAdapter mAdapter;
+    private ImageView mImgAlbumArt;
+    private TextView mTxtTitle;
+    private ImageButton mBtnPlayPause;
 
     // 소켓통신 관련 변수
     private Socket clientSocket;
@@ -87,7 +101,7 @@ public class MainActivity extends AppCompatActivity {
                 ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, 1000);
             } else {
                 // READ_EXTERNAL_STORAGE 에 대한 권한이 있음.
-                getAudioListFromMediaDatabase();
+                getAudioListFromMediaDatabase(); //여기
             }
         }
         // OS가 Marshmallow 이전일 경우 권한체크를 하지 않는다.
@@ -129,6 +143,39 @@ public class MainActivity extends AppCompatActivity {
         layoutManager.setOrientation(LinearLayoutManager.VERTICAL);
         mRecyclerView.setLayoutManager(layoutManager);
 //
+
+        //player기능 추가_정원0508
+        registerBroadcast();
+        mImgAlbumArt = (ImageView) findViewById(R.id.img_albumart);
+        mTxtTitle = (TextView) findViewById(R.id.txt_title);
+        mBtnPlayPause = (ImageButton) findViewById(R.id.btn_play_pause);
+        findViewById(R.id.lin_miniplayer).setOnClickListener(this);
+        findViewById(R.id.btn_rewind).setOnClickListener(this);
+        mBtnPlayPause.setOnClickListener(this);
+        findViewById(R.id.btn_forward).setOnClickListener(this);
+        updateUI();
+    }
+
+    //player기능 추가_정원0508
+    @Override
+    public void onClick(View v) {
+        switch (v.getId()) {
+            case R.id.lin_miniplayer:
+                // 플레이어 화면으로 이동할 코드가 들어갈 예정
+                break;
+            case R.id.btn_rewind:
+                // 이전곡으로 이동
+                AudioApplication.getmInstance().getServiceInterface().rewind();
+                break;
+            case R.id.btn_play_pause:
+                // 재생 또는 일시정지
+                AudioApplication.getmInstance().getServiceInterface().togglePlay();
+                break;
+            case R.id.btn_forward:
+                // 다음곡으로 이동
+                AudioApplication.getmInstance().getServiceInterface().forward();
+                break;
+        }
     }
 
     @Override
@@ -136,7 +183,7 @@ public class MainActivity extends AppCompatActivity {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
         if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
             // READ_EXTERNAL_STORAGE 에 대한 권한 획득.
-            getAudioListFromMediaDatabase();
+            getAudioListFromMediaDatabase(); //여기
         }
     }
 
@@ -176,6 +223,47 @@ public class MainActivity extends AppCompatActivity {
                 mAdapter.swapCursor(null);
             }
         });
+    }
+
+    //정원추가0508
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        unregisterBroadcast();
+    }
+
+    private BroadcastReceiver mBroadcastReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            updateUI();
+        }
+    };
+
+    private void updateUI() {
+        if (AudioApplication.getmInstance().getServiceInterface().isPlaying()) {
+            mBtnPlayPause.setImageResource(R.drawable.pause);
+        } else {
+            mBtnPlayPause.setImageResource(R.drawable.play);
+        }
+        AudioAdapter.AudioItem audioItem = AudioApplication.getmInstance().getServiceInterface().getAudioItem();
+        if (audioItem != null) {
+            Uri albumArtUri = ContentUris.withAppendedId(Uri.parse("content://media/external/audio/albumart"), audioItem.mAlbumId);
+            Picasso.with(getApplicationContext()).load(albumArtUri).error(R.drawable.empty_albumart).into(mImgAlbumArt);
+            mTxtTitle.setText(audioItem.mTitle);
+        } else {
+            mImgAlbumArt.setImageResource(R.drawable.empty_albumart);
+            mTxtTitle.setText("재생중인 음악이 없습니다.");
+        }
+    }
+
+    public void registerBroadcast() {
+        IntentFilter filter = new IntentFilter();
+        filter.addAction(BroadcastActions.PLAY_STATE_CHANGED);
+        registerReceiver(mBroadcastReceiver, filter);
+    }
+
+    public void unregisterBroadcast() {
+        unregisterReceiver(mBroadcastReceiver);
     }
 
     //소켓통신 관련
