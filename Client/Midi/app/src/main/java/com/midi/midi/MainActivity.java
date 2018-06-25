@@ -126,7 +126,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     for(int i=0;i<musicList.size();i++){
                        // Log.d("title : ", musicList.get(i)[0]);
                        // Log.d("album : ", musicList.get(i)[1]);
-                        socketOut.printf(kakao_id + ", " + musicList.get(i)[0] + ", " + musicList.get(i)[1] + "\n");
+                        Log.d("artist : ", musicList.get(i)[2]);
+                        socketOut.printf(kakao_id + ", " + musicList.get(i)[0] + ", " + musicList.get(i)[1] + ", " + musicList.get(i)[2] + "\n");
                     }
                     myHandler = new MyHandler();
                     myThread = new MyThread();
@@ -217,7 +218,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 if (data != null && data.getCount() > 0) {
                     musicList = new ArrayList<String[]>();
                     while (data.moveToNext()) {
-                        musicList.add(new String[]{data.getString(data.getColumnIndex(MediaStore.Audio.Media.TITLE)) ,data.getString(data.getColumnIndex(MediaStore.Audio.Media.ALBUM)) });
+                        musicList.add(new String[]{data.getString(data.getColumnIndex(MediaStore.Audio.Media.TITLE)) ,data.getString(data.getColumnIndex(MediaStore.Audio.Media.ALBUM)), data.getString(data.getColumnIndex(MediaStore.Audio.Media.ARTIST)) });
                         Log.i(TAG, "Title:" + data.getString(data.getColumnIndex(MediaStore.Audio.Media.TITLE)));
                         Log.i(TAG, "Album:" + data.getString(data.getColumnIndex(MediaStore.Audio.Media.ALBUM)));
                     }
