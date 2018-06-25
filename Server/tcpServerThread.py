@@ -14,7 +14,7 @@ class TCPServerThread(threading.Thread):
     def run(self):
         try:
             while True:
-                data = self.connection.recv(1024).decode()
+                data = self.connection.recv(1048576).decode()
 
                 # when break connection
                 if not data:
