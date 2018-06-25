@@ -2,10 +2,12 @@ package com.midi.midi;
 
 
 import android.Manifest;
+import android.app.AlertDialog;
 import android.app.Application;
 import android.content.BroadcastReceiver;
 import android.content.ContentUris;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.pm.PackageInfo;
@@ -38,6 +40,10 @@ import android.widget.Button;
 import android.widget.Toast;
 
 import com.kakao.auth.helper.Base64;
+import com.kakao.network.ErrorResult;
+import com.kakao.usermgmt.UserManagement;
+import com.kakao.usermgmt.callback.UnLinkResponseCallback;
+import com.kakao.util.helper.log.Logger;
 import com.squareup.picasso.Picasso;
 
 import java.io.BufferedReader;
@@ -112,6 +118,15 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         else {
             getAudioListFromMediaDatabase();
         }
+
+        //탈퇴버튼
+        Button withdraw = (Button) findViewById(R.id.withdraw);
+        withdraw.setOnClickListener(new View.OnClickListener(){
+            @Override
+            public void onClick(View v) {
+                onClickUnlink();
+            }
+        });
 
 //      소켓통신
         Button sendDataBtn = (Button) findViewById(R.id.sendDataBtn);
@@ -307,5 +322,54 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     class MyHandler extends Handler{
         @Override
         public void handleMessage(Message msg){}
+    }
+
+    //탈퇴관련
+    private void onClickUnlink() {
+        final String appendMessage = getString(R.string.com_kakao_confirm_unlink);
+        new AlertDialog.Builder(this)
+                .setMessage(appendMessage)
+                .setPositiveButton(getString(R.string.com_kakao_ok_button),
+                        new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                UserManagement.getInstance().requestUnlink(new UnLinkResponseCallback() {
+                                    @Override
+                                    public void onFailure(ErrorResult errorResult) {
+                                        Logger.e(errorResult.toString());
+                                    }
+
+                                    @Override
+                                    public void onSessionClosed(ErrorResult errorResult) {
+                                        redirectLoginActivity();
+                                    }
+
+                                    @Override
+                                    public void onNotSignedUp() {
+                                        //redirectSignupActivity();
+                                    }
+
+                                    @Override
+                                    public void onSuccess(Long userId) {
+                                        redirectLoginActivity();
+                                    }
+                                });
+                                dialog.dismiss();
+                            }
+                        })
+                .setNegativeButton(getString(R.string.com_kakao_cancel_button),
+                        new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                dialog.dismiss();
+                            }
+                        }).show();
+
+    }
+
+    protected void redirectLoginActivity(){
+        final Intent intent = new Intent(this, LoginActivity.class);
+        startActivity(intent);
+        finish();
     }
 }
