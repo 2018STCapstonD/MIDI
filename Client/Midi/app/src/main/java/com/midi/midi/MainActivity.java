@@ -138,11 +138,13 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     clientSocket.connect(new InetSocketAddress(ip, port), 3000);
                     socketIn = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
                     socketOut = new PrintWriter(clientSocket.getOutputStream(), true);
+
                     for(int i=0;i<musicList.size();i++){
                         Log.e("kakao_id", String.valueOf(kakao_id));
-                       // Log.d("title : ", musicList.get(i)[0]);
-                       // Log.d("album : ", musicList.get(i)[1]);
-                        Log.d("artist : ", musicList.get(i)[2]);
+                        // Log.d("title : ", musicList.get(i)[0]);
+//                        Log.d("album : ", musicList.get(i)[1]);
+//                        Log.d("artist : ", musicList.get(i)[2]);
+                        Log.d("kakao_id : ", kakao_id + ", " + musicList.get(i)[0] + ", " + musicList.get(i)[1] + ", " + musicList.get(i)[2] + "\n");
                         socketOut.printf(kakao_id + ", " + musicList.get(i)[0] + ", " + musicList.get(i)[1] + ", " + musicList.get(i)[2] + "\n");
                     }
                     myHandler = new MyHandler();
@@ -235,8 +237,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     musicList = new ArrayList<String[]>();
                     while (data.moveToNext()) {
                         musicList.add(new String[]{data.getString(data.getColumnIndex(MediaStore.Audio.Media.TITLE)) ,data.getString(data.getColumnIndex(MediaStore.Audio.Media.ALBUM)), data.getString(data.getColumnIndex(MediaStore.Audio.Media.ARTIST)) });
-                        Log.i(TAG, "Title:" + data.getString(data.getColumnIndex(MediaStore.Audio.Media.TITLE)));
-                        Log.i(TAG, "Album:" + data.getString(data.getColumnIndex(MediaStore.Audio.Media.ALBUM)));
+//                        Log.i(TAG, "Title:" + data.getString(data.getColumnIndex(MediaStore.Audio.Media.TITLE)));
+//                        Log.i(TAG, "Album:" + data.getString(data.getColumnIndex(MediaStore.Audio.Media.ALBUM)));
                     }
                 }
 //만들어진 AudioAdapter에 LoaderManager를 통해 불러온 오디오 목록이 담긴 Cursor를 적용_18/05/07_H
