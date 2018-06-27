@@ -27,7 +27,6 @@ public class LoginActivity  extends Activity {
         super.onCreate(savedInstanceState);
 
         setContentView(R.layout.activity_login);
-        requestMe();
 
         callback = new SessionCallback();
         Session.getCurrentSession().addCallback(callback);
@@ -63,37 +62,12 @@ public class LoginActivity  extends Activity {
         }                                            // 로그인화면을 다시 불러옴
     }
 
-    protected void redirectSignupActivity() {       //세션 연결 성공 시 SignupActivity로 넘김
+    protected void redirectSignupActivity() {       //세션 연결 성공 시 MainActivity로 넘김
         final Intent intent = new Intent(this, MainActivity.class);
         intent.setFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
-        intent.putExtra("kakao_id", kakao_id);
         startActivity(intent);
         finish();
     }
 
-    public void requestMe() {
-        //유저의 정보 받아오기
-        UserManagement.getInstance().requestMe(new MeResponseCallback() {
-            @Override
-            public void onFailure(ErrorResult errorResult) {
-//                super.onFailure(errorResult);
-            }
-            @Override
-            public void onSessionClosed(ErrorResult errorResult) {
-                //세션이 닫혔을 시
-            }
-
-            @Override
-            public void onNotSignedUp() {
-                //카카오톡 회원이 아닐시
-            }
-
-            @Override
-            public void onSuccess(UserProfile result) {
-                Log.e("kakao_id : ", String.valueOf(result.getId()));
-                kakao_id = result.getId();
-            }
-        });
-    }
 
 }
