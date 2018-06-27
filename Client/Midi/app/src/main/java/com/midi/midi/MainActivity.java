@@ -42,7 +42,9 @@ import android.widget.Toast;
 import com.kakao.auth.helper.Base64;
 import com.kakao.network.ErrorResult;
 import com.kakao.usermgmt.UserManagement;
+import com.kakao.usermgmt.callback.MeResponseCallback;
 import com.kakao.usermgmt.callback.UnLinkResponseCallback;
+import com.kakao.usermgmt.response.model.UserProfile;
 import com.kakao.util.helper.log.Logger;
 import com.squareup.picasso.Picasso;
 
@@ -89,9 +91,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
         StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
         StrictMode.setThreadPolicy(policy);
-
-        Intent intent = getIntent();
-        kakao_id = intent.getLongExtra("kakao_id",kakao_id);
+        requestMe();
 
         // 카카오 키해시 생성
         // 실행시 로그에서 나오는 키를 알려주세요!!
@@ -139,6 +139,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     socketIn = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
                     socketOut = new PrintWriter(clientSocket.getOutputStream(), true);
                     for(int i=0;i<musicList.size();i++){
+                        Log.e("kakao_id", String.valueOf(kakao_id));
                        // Log.d("title : ", musicList.get(i)[0]);
                        // Log.d("album : ", musicList.get(i)[1]);
                         Log.d("artist : ", musicList.get(i)[2]);
@@ -371,5 +372,32 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         final Intent intent = new Intent(this, LoginActivity.class);
         startActivity(intent);
         finish();
+    }
+
+    //유저정보 받아오기
+    public void requestMe() {
+        //유저의 정보 받아오기
+        UserManagement.getInstance().requestMe(new MeResponseCallback() {
+            @Override
+            public void onFailure(ErrorResult errorResult) {
+//                super.onFailure(errorResult);
+            }
+            @Override
+            public void onSessionClosed(ErrorResult errorResult) {
+                String message = "받아오기 실패 : " + errorResult;
+                Logger.e(message);
+            }
+
+            @Override
+            public void onNotSignedUp() {
+                //카카오톡 회원이 아닐시
+            }
+
+            @Override
+            public void onSuccess(UserProfile result) {
+                Log.e("kakao_id : ", String.valueOf(result.getId()));
+                kakao_id = result.getId();
+            }
+        });
     }
 }
