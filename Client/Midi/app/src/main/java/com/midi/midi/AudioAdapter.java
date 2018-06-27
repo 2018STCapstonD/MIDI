@@ -112,6 +112,7 @@ public class AudioAdapter extends CursorRecyclerViewAdapter<RecyclerView.ViewHol
                 public void onClick(View v) {
                     AudioApplication.getmInstance().getServiceInterface().setPlayList(getAudioIds()); //재생목록 등록
                     AudioApplication.getmInstance().getServiceInterface().play(mPosition); //선택한 오디오재생
+                    AudioApplication.getmInstance().getServiceInterface().forward();//2018_0609 앨범아트
                 }
             });
         }
