@@ -140,9 +140,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     socketOut = new PrintWriter(clientSocket.getOutputStream(), true);
                     for(int i=0;i<musicList.size();i++){
                         Log.e("kakao_id", String.valueOf(kakao_id));
-                        String title = musicList.get(i)[0].replace("%","%%");
-                        String album = musicList.get(i)[1].replace("%","%%");
-                        String artist = musicList.get(i)[2].replace("%","%%");
+                            String title = musicList.get(i)[0].replace("%","%%").replaceAll("\\/[|]\\#[$]\\^\\\\[*]","");// -> /, |, #, &, \, * 특수문자 제거
+                            String album = musicList.get(i)[1].replace("%","%%").replaceAll("\\/[|]\\#[$]\\^\\\\[*]","");;
+                            String artist = musicList.get(i)[2].replace("%","%%").replaceAll("\\/[|]\\#[$]\\^\\\\[*]","");;
+
                         Log.d("artist : ", musicList.get(i)[2]);
                         socketOut.printf(kakao_id + ", " + title + ", " + album + ", " + artist +"\n");
                     }
