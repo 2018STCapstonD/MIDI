@@ -167,7 +167,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 //
 
         //player기능 추가_정원0508
-        registerBroadcast();
         mImgAlbumArt = (ImageView) findViewById(R.id.img_albumart);
         mTxtTitle = (TextView) findViewById(R.id.txt_title);
         mBtnPlayPause = (ImageButton) findViewById(R.id.btn_play_pause);
@@ -175,6 +174,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         findViewById(R.id.btn_rewind).setOnClickListener(this);
         mBtnPlayPause.setOnClickListener(this);
         findViewById(R.id.btn_forward).setOnClickListener(this);
+
+        registerBroadcast();
         updateUI();
     }
 
@@ -251,18 +252,18 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     }
 
     //정원추가0508
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        unregisterBroadcast();
-    }
-
     private BroadcastReceiver mBroadcastReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
             updateUI();
         }
     };
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        unregisterBroadcast();
+    }
 
     //0629_jw
     private void updateUI() {
