@@ -264,6 +264,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         }
     };
 
+    //0629_jw
     private void updateUI() {
         if (AudioApplication.getmInstance().getServiceInterface().isPlaying()) {
             mBtnPlayPause.setImageResource(R.drawable.pause);
