@@ -146,7 +146,14 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                         String artist = musicList.get(i)[2].replace("%","%%");
 
                         Log.d("artist : ", musicList.get(i)[2]);
-                        socketOut.printf(kakao_id + ", " + title + ", " + album + ", " + artist +"\n");
+                        socketOut.printf(kakao_id + "::" + title + "::" + album + "::" + artist +"\n");
+                        //구분자를 ::로 설정
+                        String List = (kakao_id + "::" + title + "::" + album + "::" + artist + "\n");
+                        String[] SelectList = List.split("::");
+                        socketOut.println(SelectList[0]);
+                        socketOut.println(SelectList[1]);
+                        socketOut.println(SelectList[2]);
+                        //1000개 테스트 및 구분자 적용 중
                     }
                     myHandler = new MyHandler();
                     myThread = new MyThread();
