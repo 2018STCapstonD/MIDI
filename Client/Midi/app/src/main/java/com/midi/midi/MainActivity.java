@@ -183,6 +183,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
+
             case R.id.lin_miniplayer:
                 // 플레이어 화면으로 이동할 코드가 들어갈 예정
                 break;
@@ -286,6 +287,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     public void registerBroadcast() {
         IntentFilter filter = new IntentFilter();
         filter.addAction(BroadcastActions.PLAY_STATE_CHANGED);
+        filter.addAction(BroadcastActions.PREPARED);
         registerReceiver(mBroadcastReceiver, filter);
     }
 
