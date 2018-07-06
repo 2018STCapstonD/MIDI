@@ -146,7 +146,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                         String artist = musicList.get(i)[2].replace("%","%%");
 
                         Log.d("artist : ", musicList.get(i)[2]);
-                        socketOut.printf(kakao_id + "::" + title + "::" + album + "::" + artist +"\n");
+                        socketOut.println(kakao_id + "::" + title + "::" + album + "::" + artist);
                     }
                     myHandler = new MyHandler();
                     myThread = new MyThread();
