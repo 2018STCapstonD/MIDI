@@ -36,32 +36,6 @@ public class AudioService extends Service {
         super.onCreate();
         mMediaPlayer = new MediaPlayer();
         mMediaPlayer.setWakeMode(getApplicationContext(), PowerManager.PARTIAL_WAKE_LOCK);
-        mMediaPlayer.setOnPreparedListener(new MediaPlayer.OnPreparedListener(){
-            @Override
-            public void onPrepared(MediaPlayer mp) {
-                isPrepared = true;
-                mp.start();
-            }
-        });
-        mMediaPlayer.setOnCompletionListener(new MediaPlayer.OnCompletionListener(){
-            @Override
-            public void onCompletion(MediaPlayer mp) {
-                isPrepared = false;
-            }
-        });
-        mMediaPlayer.setOnErrorListener(new MediaPlayer.OnErrorListener(){
-            @Override
-            public boolean onError(MediaPlayer mp, int what, int extra) {
-                isPrepared = false;
-                return false;
-            }
-        });
-        mMediaPlayer.setOnSeekCompleteListener(new MediaPlayer.OnSeekCompleteListener(){
-            @Override
-            public void onSeekComplete(MediaPlayer mp) {
-
-            }
-        });
 
         mMediaPlayer.setOnPreparedListener(new MediaPlayer.OnPreparedListener(){
             @Override
@@ -71,14 +45,27 @@ public class AudioService extends Service {
                 sendBroadcast(new Intent(BroadcastActions.PREPARED)); //prepared전송
             }
         });
-        mMediaPlayer.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
+        mMediaPlayer.setOnCompletionListener(new MediaPlayer.OnCompletionListener(){
             @Override
             public void onCompletion(MediaPlayer mp) {
                 isPrepared = false;
                 sendBroadcast(new Intent(BroadcastActions.PLAY_STATE_CHANGED)); //재생상태 변경 전송
             }
         });
+        mMediaPlayer.setOnErrorListener(new MediaPlayer.OnErrorListener(){
+            @Override
+            public boolean onError(MediaPlayer mp, int what, int extra) {
+                isPrepared = false;
+                sendBroadcast(new Intent(BroadcastActions.PLAY_STATE_CHANGED)); //재생상태 변경 전송
+                return false;
+            }
+        });
+        mMediaPlayer.setOnSeekCompleteListener(new MediaPlayer.OnSeekCompleteListener(){
+            @Override
+            public void onSeekComplete(MediaPlayer mp) {
 
+            }
+        });
     }
 
     @Override
@@ -144,13 +131,6 @@ public class AudioService extends Service {
         }
     }
 
-    public void pause() {
-        if(isPrepared) {
-            mMediaPlayer.pause();
-            sendBroadcast(new Intent(BroadcastActions.PLAY_STATE_CHANGED)); //재생상태 변경 전송
-        }
-    }
-
     private void stop() {
         mMediaPlayer.stop();
         mMediaPlayer.reset();
@@ -169,6 +149,13 @@ public class AudioService extends Service {
         }
     }
 
+    public void pause() {
+        if(isPrepared) {
+            mMediaPlayer.pause();
+            sendBroadcast(new Intent(BroadcastActions.PLAY_STATE_CHANGED)); //재생상태 변경 전송
+        }
+    }
+
     public void forward() {
         if(mAudioIds.size() - 1 > mCurrentPosition) {
             mCurrentPosition++; //다음 포지션으로 이동
@@ -176,6 +163,7 @@ public class AudioService extends Service {
             mCurrentPosition = 0; //처음 포지션으로 이동
         }
         play(mCurrentPosition);
+        sendBroadcast(new Intent(BroadcastActions.PLAY_STATE_CHANGED)); //재생상태 변경 전송
     }
 
     public void rewind() {
@@ -185,6 +173,7 @@ public class AudioService extends Service {
             mCurrentPosition = mAudioIds.size() -1; //마지막 포지션으로 이동
         }
         play(mCurrentPosition);
+        sendBroadcast(new Intent(BroadcastActions.PLAY_STATE_CHANGED)); //재생상태 변경 전송
     }
 
     public AudioAdapter.AudioItem getAudioItem() {
