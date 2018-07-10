@@ -26,7 +26,7 @@
 
 
         <Button
-            android:id="@+id/btn"
+            android:id="@+id/btn_recommendPlayList"
             android:layout_width="match_parent"
             android:layout_height="50dp"
             android:text="Recommended Play List" />
@@ -49,7 +49,7 @@
         <TextView
             android:id="@+id/tv"
             android:layout_width="wrap_content"
-            android:layout_height="150dp"
+            android:layout_height="match_parent"
             android:text=" -> print music list" />
 
     </LinearLayout>
@@ -108,7 +108,9 @@
         android:layout_height="58dp"
         android:background="@android:color/darker_gray"
         android:gravity="center_vertical"
-        android:orientation="horizontal">
+        android:orientation="horizontal"
+        android:padding="3dp"
+        android:layout_marginTop="5dp">
 
         <ImageView
             android:id="@+id/img_albumart"
