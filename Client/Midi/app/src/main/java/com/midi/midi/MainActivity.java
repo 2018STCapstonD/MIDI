@@ -139,7 +139,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     }
                     myHandler = new MyHandler();
                     myThread = new MyThread();
-                    myThread.start()
+                    myThread.start();
                     myThread.interrupt();
                 }catch(Exception e){
                     Toast.makeText(getApplicationContext(), "Internal Server Error", Toast.LENGTH_LONG).show();
