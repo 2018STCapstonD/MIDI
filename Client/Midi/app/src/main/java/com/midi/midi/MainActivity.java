@@ -131,19 +131,15 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     socketIn = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
                     socketOut = new PrintWriter(clientSocket.getOutputStream(), true);
                     for(int i=0;i<musicList.size();i++){
-                        Log.e("kakao_id", String.valueOf(kakao_id));
                         String title = musicList.get(i)[0].replace("%","%%");
-                        // |, #, &, \, * 특수문자 제거
                         String album = musicList.get(i)[1].replace("%","%%");
                         String artist = musicList.get(i)[2].replace("%","%%");
 
-                        Log.d("artist : ", musicList.get(i)[2]);
                         socketOut.println(kakao_id + "::" + title + "::" + album + "::" + artist);
                     }
                     myHandler = new MyHandler();
                     myThread = new MyThread();
-                    myThread.start();
-                    //데이터 전송 부분
+                    myThread.start()
                     myThread.interrupt();
                 }catch(Exception e){
                     Toast.makeText(getApplicationContext(), "Internal Server Error", Toast.LENGTH_LONG).show();
