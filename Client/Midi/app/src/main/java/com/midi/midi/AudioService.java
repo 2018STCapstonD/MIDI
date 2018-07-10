@@ -36,7 +36,6 @@ public class AudioService extends Service {
         super.onCreate();
         mMediaPlayer = new MediaPlayer();
         mMediaPlayer.setWakeMode(getApplicationContext(), PowerManager.PARTIAL_WAKE_LOCK);
-
         mMediaPlayer.setOnPreparedListener(new MediaPlayer.OnPreparedListener(){
             @Override
             public void onPrepared(MediaPlayer mp) {
@@ -49,7 +48,7 @@ public class AudioService extends Service {
             @Override
             public void onCompletion(MediaPlayer mp) {
                 isPrepared = false;
-                sendBroadcast(new Intent(BroadcastActions.PLAY_STATE_CHANGED)); //재생상태 변경 전송
+            sendBroadcast(new Intent(BroadcastActions.PLAY_STATE_CHANGED)); //재생상태 변경 전송
             }
         });
         mMediaPlayer.setOnErrorListener(new MediaPlayer.OnErrorListener(){
