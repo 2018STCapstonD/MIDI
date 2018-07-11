@@ -9,7 +9,7 @@ import android.widget.Button;
  * Created by leejw on 2018-07-10.
  */
 
-public class ReturnToMainPage extends Activity{
+public class ReturnToMainPageFromRecommend extends Activity{
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

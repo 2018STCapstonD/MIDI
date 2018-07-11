@@ -41,7 +41,8 @@
             android:exported="true">
         </service>
 
-        <activity android:name=".ReturnToMainPage"/>
+        <activity android:name=".ReturnToMainPageFromRecommend"/>
+        <activity android:name=".ReturnToMainPageFromMusicList"/>
     </application>
 
 

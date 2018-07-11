@@ -9,9 +9,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
-import android.content.pm.Signature;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Build;
@@ -36,7 +34,6 @@ import android.widget.TextView;
 import android.widget.Button;
 import android.widget.Toast;
 
-import com.kakao.auth.helper.Base64;
 import com.kakao.network.ErrorResult;
 import com.kakao.usermgmt.UserManagement;
 import com.kakao.usermgmt.callback.MeResponseCallback;
@@ -50,7 +47,6 @@ import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.InetSocketAddress;
 import java.net.Socket;
-import java.security.MessageDigest;
 import java.util.ArrayList;
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener{
@@ -84,14 +80,24 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         setContentView(R.layout.activity_main);
         //recommended Play List로 화면 전환_jw_0710
         Button btnRecommendList = findViewById(R.id.btn_recommendPlayList);
+        Button btnPlayList = findViewById(R.id.btn_playList);
+
         btnRecommendList.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(getApplicationContext(),ReturnToMainPage.class);
+                Intent intent = new Intent(getApplicationContext(),ReturnToMainPageFromRecommend.class);
                 startActivity(intent);
             }
         });
-        //화면전환
+
+        btnPlayList.setOnClickListener(new View.OnClickListener(){
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(getApplicationContext(),ReturnToMainPageFromMusicList.class);
+                startActivity(intent);
+            }
+        });
+        //화면전환 끝
 
         StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
         StrictMode.setThreadPolicy(policy);
