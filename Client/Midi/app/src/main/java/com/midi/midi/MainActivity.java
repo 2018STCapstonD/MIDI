@@ -119,13 +119,27 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             getAudioListFromMediaDatabase();
         }
 
-        //탈퇴버튼
+        //뮤직리스트 Full View 보기 버튼, youtubeButton 이름 수정 필요
+        Button viewFullList = (Button)findViewById(R.id.youtubeButton);
+        viewFullList.setOnClickListener(new View.OnClickListener() {
+                                            @Override
+                                            public void onClick(View view) {
+                                                Intent intent = new Intent(
+                                                        getApplicationContext(),
+                                                        FullListActivity.class);
+                                                startActivity(intent);
+                                            }
+                                        });
+
+                //탈퇴버튼
         Button withdraw = (Button) findViewById(R.id.withdraw);
         withdraw.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View v) {
                 onClickUnlink();
             }
+
+
         });
 
 //      소켓통신
@@ -180,6 +194,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
         registerBroadcast();
         updateUI();
+
+
     }
 
     //player기능 추가_정원0508

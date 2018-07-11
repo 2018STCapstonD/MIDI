@@ -13,6 +13,8 @@
         android:theme="@style/AppTheme"
         android:name=".AudioApplication">
 
+
+
         <!--splashActivity 추가 2018-03-29 YH-->
 
         <activity android:name="com.midi.midi.SplashActivity"
@@ -34,6 +36,12 @@
         <activity android:name=".MainActivity"
             android:label="Midi">
         </activity>
+
+
+        <activity android:name=".FullListActivity"
+            android:label="Midi">
+        </activity>
+
 
         <service
             android:name=".AudioService"
