@@ -3,7 +3,6 @@ package com.midi.midi;
 
 import android.Manifest;
 import android.app.AlertDialog;
-import android.app.Application;
 import android.content.BroadcastReceiver;
 import android.content.ContentUris;
 import android.content.Context;
@@ -17,13 +16,11 @@ import android.database.Cursor;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
-import android.os.PersistableBundle;
 import android.os.Handler;
 import android.os.Message;
 import android.os.StrictMode;
 import android.provider.MediaStore;
 import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.CursorLoader;
@@ -49,15 +46,12 @@ import com.kakao.util.helper.log.Logger;
 import com.squareup.picasso.Picasso;
 
 import java.io.BufferedReader;
-import java.io.IOException;
 import java.io.InputStreamReader;
-import java.io.InterruptedIOException;
 import java.io.PrintWriter;
 import java.net.InetSocketAddress;
 import java.net.Socket;
 import java.security.MessageDigest;
 import java.util.ArrayList;
-import java.util.List;
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener{
     private final static int LOADER_ID = 0x001;
@@ -88,23 +82,21 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     protected void onCreate(final Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        //recommended Play List로 화면 전환_jw_0710
+        Button btnRecommendList = findViewById(R.id.btn_recommendPlayList);
+        btnRecommendList.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(getApplicationContext(),ReturnToMainPage.class);
+                startActivity(intent);
+            }
+        });
+        //화면전환
 
         StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
         StrictMode.setThreadPolicy(policy);
         requestMe();
 
-        // 카카오 키해시 생성
-        // 실행시 로그에서 나오는 키를 알려주세요!!
-        try {
-            PackageInfo info = getPackageManager().getPackageInfo(this.getPackageName(), PackageManager.GET_SIGNATURES);
-            for (Signature signature : info.signatures) {
-                MessageDigest messageDigest = MessageDigest.getInstance("SHA");
-                messageDigest.update(signature.toByteArray());
-                Log.d("Key!!!!! : ", Base64.encodeBase64URLSafeString(messageDigest.digest()));
-            }
-        }catch(Exception e){
-            Log.d("error : ", e.toString());
-        }
         // OS가 Marshmallow 이상일 경우 권한체크를 해야 합니다.
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             if (ActivityCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
@@ -139,19 +131,15 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     socketIn = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
                     socketOut = new PrintWriter(clientSocket.getOutputStream(), true);
                     for(int i=0;i<musicList.size();i++){
-                        Log.e("kakao_id", String.valueOf(kakao_id));
                         String title = musicList.get(i)[0].replace("%","%%");
-                        // |, #, &, \, * 특수문자 제거
                         String album = musicList.get(i)[1].replace("%","%%");
                         String artist = musicList.get(i)[2].replace("%","%%");
 
-                        Log.d("artist : ", musicList.get(i)[2]);
-                        socketOut.printf(kakao_id + "::" + title + "::" + album + "::" + artist +"\n");
+                        socketOut.println(kakao_id + "::" + title + "::" + album + "::" + artist);
                     }
                     myHandler = new MyHandler();
                     myThread = new MyThread();
                     myThread.start();
-                    //데이터 전송 부분
                     myThread.interrupt();
                 }catch(Exception e){
                     Toast.makeText(getApplicationContext(), "Internal Server Error", Toast.LENGTH_LONG).show();
@@ -248,7 +236,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                         Log.i(TAG, "Album:" + album);
                     }
                 }
-//만들어진 AudioAdapter에 LoaderManager를 통해 불러온 오디오 목록이 담긴 Cursor를 적용_18/05/07_H
+                //만들어진 AudioAdapter에 LoaderManager를 통해 불러온 오디오 목록이 담긴 Cursor를 적용_18/05/07_H
                 mAdapter.swapCursor(data);
             }
 

@@ -40,6 +40,8 @@
             android:enabled="true"
             android:exported="true">
         </service>
+
+        <activity android:name=".ReturnToMainPage"/>
     </application>
 
 

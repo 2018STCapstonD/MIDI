@@ -26,10 +26,11 @@ public class LoginActivity  extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        setContentView(R.layout.activity_login);
-
         callback = new SessionCallback();
         Session.getCurrentSession().addCallback(callback);
+        Session.getCurrentSession().checkAndImplicitOpen();
+
+        setContentView(R.layout.activity_login);
     }
 
     @Override
