@@ -24,10 +24,7 @@ public class AudioService extends Service {
     private final IBinder mBinder = new AudioServiceBinder();
     private MediaPlayer mMediaPlayer;
     private boolean isPrepared;
-
-    private String title;
-    private long _id;
-
+    private DBHelper dbHelper;
 
     public class AudioServiceBinder extends Binder {
         AudioService getService() {
@@ -38,7 +35,7 @@ public class AudioService extends Service {
     @Override
     public void onCreate() {
         super.onCreate();
-        final DBHelper dbHelper = new DBHelper(getApplicationContext(), "played.db", null, 1);
+        dbHelper = new DBHelper(getApplicationContext(), "played.db", null, 1);
         mMediaPlayer = new MediaPlayer();
         mMediaPlayer.setWakeMode(getApplicationContext(), PowerManager.PARTIAL_WAKE_LOCK);
         mMediaPlayer.setOnPreparedListener(new MediaPlayer.OnPreparedListener(){
@@ -144,7 +141,8 @@ public class AudioService extends Service {
         queryAudioItem(position);
         stop();
         prepare();
-        Log.d("Now playing... : ", String.valueOf(mAudioIds.get(position)));
+        //현재 플레이중인 음악 ID 저장
+        dbHelper.insert(mAudioIds.get(position));
     }
 
     public void play() {

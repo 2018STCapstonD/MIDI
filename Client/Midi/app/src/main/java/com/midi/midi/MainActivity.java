@@ -72,6 +72,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private MyHandler myHandler;
     private long kakao_id;
     private static ArrayList<String[]> musicList;
+    private DBHelper dbHelper;
 
 
     //
@@ -82,6 +83,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     protected void onCreate(final Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        dbHelper = new DBHelper(getApplicationContext(), "played.db", null, 1);
+
         //recommended Play List로 화면 전환_jw_0710
         Button btnRecommendList = findViewById(R.id.btn_recommendPlayList);
         btnRecommendList.setOnClickListener(new View.OnClickListener() {
@@ -92,7 +96,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             }
         });
         //화면전환
-
         StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
         StrictMode.setThreadPolicy(policy);
         requestMe();
@@ -134,8 +137,11 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                         String title = musicList.get(i)[0].replace("%","%%");
                         String album = musicList.get(i)[1].replace("%","%%");
                         String artist = musicList.get(i)[2].replace("%","%%");
+                        String _id = musicList.get(i)[3].replace("%","%%");
 
-                        socketOut.println(kakao_id + "::" + title + "::" + album + "::" + artist);
+                        int count = dbHelper.getPlayedCount(Long.valueOf(_id));
+
+                        socketOut.println(kakao_id + "::" + title + "::" + album + "::" + artist + "::" + count);
                     }
                     myHandler = new MyHandler();
                     myThread = new MyThread();
@@ -230,8 +236,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                         String title = data.getString(data.getColumnIndex(MediaStore.Audio.Media.TITLE));
                         String album = data.getString(data.getColumnIndex(MediaStore.Audio.Media.ALBUM));
                         String artist = data.getString(data.getColumnIndex(MediaStore.Audio.Media.ARTIST));
+                        String _id = data.getString(data.getColumnIndex(MediaStore.Audio.Media._ID));
 
-                        musicList.add(new String[]{title, album, artist});
+                        musicList.add(new String[]{title, album, artist, _id});
                         Log.i(TAG, "Title:" + title);
                         Log.i(TAG, "Album:" + album);
                     }

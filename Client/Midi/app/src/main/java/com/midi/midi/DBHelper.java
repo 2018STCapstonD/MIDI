@@ -28,14 +28,23 @@ public class DBHelper extends SQLiteOpenHelper {
         db.execSQL("INSERT INTO PLAYED (song_id) VALUES('"+ _id +"')");
     }
 
-    public String getResult(){
+    public int getPlayedCount(long _id){
         SQLiteDatabase db = getReadableDatabase();
-        String result = "";
+        int result;
 
-        Cursor cursor = db.rawQuery("SELECT * FROM PLAYED", null);
-        while(cursor.moveToNext()){
-            result += cursor.getInt(0) + " : " + cursor.getLong(1) + "\n";
-        }
+        Cursor cursor = db.rawQuery("SELECT * FROM PLAYED WHERE song_id = '"+_id+"'", null);
+        //while(cursor.moveToNext()){
+        //    result += cursor.getInt(0) + " : " + cursor.getLong(1) + "\n";
+        //}
+
+        result = cursor.getCount();
+        cursor.close();
+
         return result;
+    }
+
+    public void delete(){
+        SQLiteDatabase db = getWritableDatabase();
+        db.execSQL("DELETE FROM PLAYED");
     }
 }
