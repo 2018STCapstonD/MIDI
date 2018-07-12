@@ -11,6 +11,7 @@ import android.os.IBinder;
 import android.os.PowerManager;
 import android.provider.MediaStore;
 import android.support.annotation.Nullable;
+import android.util.Log;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -24,6 +25,9 @@ public class AudioService extends Service {
     private MediaPlayer mMediaPlayer;
     private boolean isPrepared;
 
+    private String title;
+    private long _id;
+
 
     public class AudioServiceBinder extends Binder {
         AudioService getService() {
@@ -34,6 +38,7 @@ public class AudioService extends Service {
     @Override
     public void onCreate() {
         super.onCreate();
+        final DBHelper dbHelper = new DBHelper(getApplicationContext(), "played.db", null, 1);
         mMediaPlayer = new MediaPlayer();
         mMediaPlayer.setWakeMode(getApplicationContext(), PowerManager.PARTIAL_WAKE_LOCK);
         mMediaPlayer.setOnPreparedListener(new MediaPlayer.OnPreparedListener(){
@@ -139,6 +144,7 @@ public class AudioService extends Service {
         queryAudioItem(position);
         stop();
         prepare();
+        Log.d("Now playing... : ", String.valueOf(mAudioIds.get(position)));
     }
 
     public void play() {
