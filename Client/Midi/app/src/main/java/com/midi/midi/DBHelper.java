@@ -43,6 +43,17 @@ public class DBHelper extends SQLiteOpenHelper {
         return result;
     }
 
+    public int getTotalCount(){
+        SQLiteDatabase db = getReadableDatabase();
+        int result;
+        Cursor cursor = db.rawQuery("SELECT * FROM PLAYED", null);
+
+        result = cursor.getCount();
+        cursor.close();
+
+        return result;
+    }
+
     public void delete(){
         SQLiteDatabase db = getWritableDatabase();
         db.execSQL("DELETE FROM PLAYED");
