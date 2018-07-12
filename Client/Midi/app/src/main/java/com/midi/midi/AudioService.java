@@ -46,7 +46,7 @@ public class AudioService extends Service {
         });
         mMediaPlayer.setOnCompletionListener(new MediaPlayer.OnCompletionListener(){
             @Override
-            public void onCompletion(MediaPlayer mp) 
+            public void onCompletion(MediaPlayer mp) {
                 //isPrepared = false;
                 //sendBroadcast(new Intent(BroadcastActions.PLAY_STATE_CHANGED)); //재생상태 변경 전송
                 forward();
