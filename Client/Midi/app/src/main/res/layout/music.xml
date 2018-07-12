@@ -2,31 +2,8 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="50dp"
-    android:orientation="vertical">
+    android:orientation="horizontal">
 
-    <LinearLayout
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal">
-
-        <TextView
-            android:layout_width="335dp"
-            android:layout_height="match_parent"
-            android:padding="10dp"
-            android:text="Music Play List"
-            android:textColor="#000000"
-            android:textStyle="bold"
-            android:textSize="18dp"
-            android:layout_marginTop="5dp"/>
-
-        <Button
-            android:id="@+id/btn_returnPage"
-            android:layout_width="45dp"
-            android:layout_height="wrap_content"
-            android:text="X"
-            android:layout_marginRight="5dp"/>
-
-    </LinearLayout>
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -38,7 +15,7 @@
             android:layout_width="50dp"
             android:layout_height="50dp"
             android:scaleType="fitXY"
-            android:src="@drawable/empty_albumart"/>
+            android:src="@drawable/empty_albumart" />
 
         <LinearLayout
             android:layout_width="0dp"
@@ -53,7 +30,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="Sample Title"
-                android:textColor="@android:color/black"/>
+                android:textColor="@android:color/black" />
 
             <TextView
                 android:id="@+id/txt_sub_title"
@@ -61,7 +38,7 @@
                 android:layout_height="wrap_content"
                 android:text="Sample Subtitle"
                 android:textColor="@android:color/darker_gray"
-                android:textSize="12sp"/>
+                android:textSize="12sp" />
 
         </LinearLayout>
 
@@ -69,9 +46,10 @@
             android:id="@+id/txt_duration"
             android:layout_width="50dp"
             android:layout_height="match_parent"
+            android:layout_gravity="right"
             android:gravity="center"
             android:text="03:00"
-            android:textSize="12sp"/>
+            android:textSize="12sp" />
 
     </LinearLayout>
 
