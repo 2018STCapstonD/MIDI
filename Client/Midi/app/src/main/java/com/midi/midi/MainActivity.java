@@ -64,8 +64,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private BufferedReader socketIn;
     private PrintWriter socketOut;
     private int port = 37771;
-    //private final String ip = "117.17.198.39";
-    private final String ip = "192.168.0.20";
+    private final String ip = "117.17.198.39";
     private MyThread myThread;
     private MyHandler myHandler;
     private long kakao_id;
