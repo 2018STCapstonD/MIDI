@@ -43,6 +43,7 @@ import com.kakao.util.helper.log.Logger;
 import com.squareup.picasso.Picasso;
 
 import java.io.BufferedReader;
+import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.InetSocketAddress;
@@ -63,11 +64,13 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private BufferedReader socketIn;
     private PrintWriter socketOut;
     private int port = 37771;
-    private final String ip = "117.17.198.39";
+    //private final String ip = "117.17.198.39";
+    private final String ip = "192.168.0.20";
     private MyThread myThread;
     private MyHandler myHandler;
     private long kakao_id;
     private static ArrayList<String[]> musicList;
+    private DBHelper dbHelper;
 
 
     //
@@ -78,6 +81,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     protected void onCreate(final Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        dbHelper = new DBHelper(getApplicationContext(), "played.db", null, 1);
+
         //recommended Play List로 화면 전환_jw_0710
         Button btnRecommendList = findViewById(R.id.btn_recommendPlayList);
         Button btnPlayList = findViewById(R.id.btn_playList);
@@ -98,7 +104,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             }
         });
         //화면전환 끝
-
         StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
         StrictMode.setThreadPolicy(policy);
         requestMe();
@@ -136,20 +141,29 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     clientSocket.connect(new InetSocketAddress(ip, port), 3000);
                     socketIn = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
                     socketOut = new PrintWriter(clientSocket.getOutputStream(), true);
+                    int totalCount = dbHelper.getTotalCount();
+
                     for(int i=0;i<musicList.size();i++){
                         String title = musicList.get(i)[0].replace("%","%%");
                         String album = musicList.get(i)[1].replace("%","%%");
                         String artist = musicList.get(i)[2].replace("%","%%");
+                        String _id = musicList.get(i)[3].replace("%","%%");
 
-                        socketOut.println(kakao_id + "::" + title + "::" + album + "::" + artist);
+                        int playedCount = dbHelper.getPlayedCount(Long.valueOf(_id));
+                        double rating = 100 * playedCount/totalCount;
+
+                        socketOut.println(kakao_id + "::" + title + "::" + album + "::" + artist + "::" + rating);
                     }
                     myHandler = new MyHandler();
                     myThread = new MyThread();
                     myThread.start();
                     myThread.interrupt();
-                }catch(Exception e){
+                }catch(IOException e){
                     Toast.makeText(getApplicationContext(), "Internal Server Error", Toast.LENGTH_LONG).show();
                     e.printStackTrace();
+                }catch(ArithmeticException e){
+                    //totalCount가 0일 시
+                    Toast.makeText(getApplicationContext(), "보낼 데이터가 존재하지 않습니다.", Toast.LENGTH_LONG).show();
                 }
             }
         });
@@ -236,10 +250,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                         String title = data.getString(data.getColumnIndex(MediaStore.Audio.Media.TITLE));
                         String album = data.getString(data.getColumnIndex(MediaStore.Audio.Media.ALBUM));
                         String artist = data.getString(data.getColumnIndex(MediaStore.Audio.Media.ARTIST));
+                        String _id = data.getString(data.getColumnIndex(MediaStore.Audio.Media._ID));
 
-                        musicList.add(new String[]{title, album, artist});
-                        Log.i(TAG, "Title:" + title);
-                        Log.i(TAG, "Album:" + album);
+                        musicList.add(new String[]{title, album, artist, _id});
                     }
                 }
                 //만들어진 AudioAdapter에 LoaderManager를 통해 불러온 오디오 목록이 담긴 Cursor를 적용_18/05/07_H
