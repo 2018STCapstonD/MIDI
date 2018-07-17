@@ -153,7 +153,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                         double rating = (Math.random() * 4) + 1;
                         //double rating = 100 * playedCount/totalCount;
 
-                        socketOut.println(kakao_id + "::" + title + "::" + album + "::" + artist + "::" + rating);
+                        socketOut.println(kakao_id + "|" + title + "|" + album + "|" + artist + "|" + rating);
                     }
                     myHandler = new MyHandler();
                     myThread = new MyThread();
