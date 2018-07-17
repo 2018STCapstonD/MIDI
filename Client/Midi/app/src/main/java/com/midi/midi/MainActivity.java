@@ -49,6 +49,7 @@ import java.io.PrintWriter;
 import java.net.InetSocketAddress;
 import java.net.Socket;
 import java.util.ArrayList;
+import java.util.Random;
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener{
     private final static int LOADER_ID = 0x001;
@@ -149,7 +150,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                         String _id = musicList.get(i)[3].replace("%","%%");
 
                         int playedCount = dbHelper.getPlayedCount(Long.valueOf(_id));
-                        double rating = 100 * playedCount/totalCount;
+                        double rating = (Math.random() * 4) + 1;
+                        //double rating = 100 * playedCount/totalCount;
 
                         socketOut.println(kakao_id + "::" + title + "::" + album + "::" + artist + "::" + rating);
                     }
