@@ -20,9 +20,15 @@ import android.os.StrictMode;
 import android.provider.MediaStore;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentPagerAdapter;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
+import android.support.v4.view.ViewPager;
+import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.LinearLayoutManager;
@@ -50,7 +56,10 @@ import java.net.InetSocketAddress;
 import java.net.Socket;
 import java.util.ArrayList;
 
-public class MainActivity extends AppCompatActivity implements View.OnClickListener{
+public class MainActivity extends AppCompatActivity implements View.OnClickListener, ActionBar.TabListener{
+    AppSectionsPagerAdapter mAppSectionsPagerAdapter;
+    static ViewPager mViewPager; //한번에 하나의 섹션 보여짐
+
     private final static int LOADER_ID = 0x001;
 
     private RecyclerView mRecyclerView;
@@ -176,7 +185,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         mRecyclerView.setLayoutManager(layoutManager);
 //
 
-        //player기능 추가_정원0508
+//player기능 추가_정원0508
         mImgAlbumArt = (ImageView) findViewById(R.id.img_albumart);
         mTxtTitle = (TextView) findViewById(R.id.txt_title);
         mBtnPlayPause = (ImageButton) findViewById(R.id.btn_play_pause);
@@ -187,6 +196,41 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
         registerBroadcast();
         updateUI();
+
+
+//Swipe기능_jw0717
+        //어댑터 생성. 색션마다 프래그먼트를 생성하여 리턴
+        mAppSectionsPagerAdapter = new AppSectionsPagerAdapter(getSupportFragmentManager());
+        //액션바 설정
+        final ActionBar actionBar = getSupportActionBar();
+        //액션바 Home버튼 비활성화
+        actionBar.setHomeButtonEnabled(true);
+        //탭을 액션바에 보여줄 것이라고 지정
+        actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_TABS);
+
+        //ViewPager 설정
+        mViewPager = (ViewPager) findViewById(R.id.pager);
+        //ViewPager에 어댑터 연결
+        mViewPager.setAdapter(mAppSectionsPagerAdapter);
+        //사용자가 섹션사이를 스와이프할 때 발생하는 이벤트에 대한 리스너 설정
+        mViewPager.setOnPageChangeListener(new ViewPager.SimpleOnPageChangeListener() {
+            @Override //스와이프로 페이지 이동시 호출됨
+            public void onPageSelected(int position) {
+                //화면을 좌우로 스와이핑하여 섹션 사이를 이동할 때, 현재 선택된 탭의 위치
+                //액션바의 탭위치를 페이지 위치에 맞춤
+                actionBar.setSelectedNavigationItem(position);
+            }
+        });
+
+        //각각의 섹션을 위한 탭을 액션바에 추가
+        for (int i = 0; i < mAppSectionsPagerAdapter.getCount(); i++) {
+            actionBar.addTab(
+                    actionBar.newTab()
+                            //어댑터에서 정의한 페이지 제목을 탭에 보이는 문자열로 사용
+                            .setText(mAppSectionsPagerAdapter.getPageTitle(i))
+                            //TabListener 인터페이스를 구현할 액티비티 오브젝트 지정
+                            .setTabListener(this));
+        }
     }
 
     //player기능 추가_정원0508
@@ -308,6 +352,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         unregisterReceiver(mBroadcastReceiver);
     }
 
+
     //소켓통신 관련
     class MyThread extends Thread{
         boolean flag = true;
@@ -416,5 +461,58 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 kakao_id = result.getId();
             }
         });
+    }
+
+
+//Swipe관련코드_jw0717
+    @Override
+    public void onTabSelected(ActionBar.Tab tab, FragmentTransaction ft) {
+        //액션바에서 선택된 탭에 대응되는 페이지를 뷰페이지에서 현재 보여지는 페이지로 변경
+        mViewPager.setCurrentItem(tab.getPosition());
+    }
+    @Override
+    public void onTabUnselected(ActionBar.Tab tab, FragmentTransaction ft) {}
+    @Override
+    public void onTabReselected(ActionBar.Tab tab, FragmentTransaction ft) {}
+
+    /*세션에 대응되는 프래그먼트를 리턴*/
+    public static class AppSectionsPagerAdapter extends FragmentPagerAdapter{
+        private FragmentManager fm;
+
+        public AppSectionsPagerAdapter(FragmentManager fm){
+            super(fm);
+            this.fm = fm;
+        }
+
+        @Override
+        public Fragment getItem(int pos) {
+            //태그로 프래그먼트 찾기
+            Fragment fragment = fm.findFragmentByTag("android:switcher:" + mViewPager.getId() + ":" + getItemId(pos));
+
+            //프래그먼트가 이미 생성되어 있는 경우 리턴
+            if(fragment != null) {
+                return fragment;
+            }
+
+            //프래그먼트의 인스턴스를 생성
+            switch (pos) {
+                case 0: return FirstFragment.newInstance("FirstFragment, Instance 1");
+                case 1: return SecondFragment.newInstance("SecondFragment, Instance 2");
+                case 2: return FragmentThird.newInstance("ThirdFragment, Instance 3");
+                default: return FragmentThird.newInstance("ThirdFragment, Default");
+            }
+        }
+
+        //프래그먼트를 최대 3개를 생성
+        @Override
+        public int getCount() {
+            return 3;
+        }
+
+        //탭의 제목으로 사용되는 문자열 생성
+        @Override
+        public CharSequence getPageTitle(int position) {
+            return "Section" + (position + 1);
+        }
     }
 }
