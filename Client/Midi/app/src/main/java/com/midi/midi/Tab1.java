@@ -145,9 +145,9 @@ public class Tab1 extends Fragment implements View.OnClickListener{
 
         //        RecyclerView와 AudioAdapter를 연결하여 실제 데이터를 표시 추가_18/05/07_H
         mRecyclerView = (RecyclerView) view.findViewById(R.id.recyclerview);
-        mAdapter = new AudioAdapter(this.getContext(), null);
+        mAdapter = new AudioAdapter(mContext, null);
         mRecyclerView.setAdapter(mAdapter);
-        LinearLayoutManager layoutManager = new LinearLayoutManager(this.getContext());
+        LinearLayoutManager layoutManager = new LinearLayoutManager(mContext);
         layoutManager.setOrientation(LinearLayoutManager.VERTICAL);
         mRecyclerView.setLayoutManager(layoutManager);
 //
@@ -292,7 +292,7 @@ public class Tab1 extends Fragment implements View.OnClickListener{
     //탈퇴관련
     public void onClickUnlink() {
         final String appendMessage = getString(R.string.com_kakao_confirm_unlink);
-        new AlertDialog.Builder(this.getContext())
+        new AlertDialog.Builder(mContext)
                 .setMessage(appendMessage)
                 .setPositiveButton(getString(R.string.com_kakao_ok_button),
                         new DialogInterface.OnClickListener() {

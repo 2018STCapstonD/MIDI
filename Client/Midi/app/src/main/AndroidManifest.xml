@@ -57,7 +57,7 @@
         <activity android:name=".ReturnToMainPageFromRecommend" />
         <activity android:name=".ReturnToMainPageFromMusicList" />
         <activity
-            android:name=".SwipeActivity"
+            android:name=".MainActivity"
             android:label="@string/title_activity_swipe"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity android:name=".Tab1" />
