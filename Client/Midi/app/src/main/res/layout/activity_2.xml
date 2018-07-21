@@ -1,9 +1,113 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
+
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+xmlns:app="http://schemas.android.com/apk/res-auto"
+android:layout_width="match_parent"
+android:layout_height="match_parent"
+xmlns:tools="http://schemas.android.com/tools"
+android:orientation="vertical"
+android:paddingBottom="@dimen/activity_vertical_margin"
+android:paddingLeft="@dimen/activity_vertical_margin"
+android:paddingRight="@dimen/activity_horizontal_margin"
+android:paddingTop="@dimen/activity_vertical_margin"
+tools:context="com.midi.midi.MainActivity"
+android:weightSum="1">
+
+
+
+<ProgressBar
+    android:id="@+id/progressBar"
+    style="?android:attr/progressBarStyleHorizontal"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content" />
+
+<LinearLayout
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical">
+
+    <!--<view-->
+    <!--android:id="@+id/youtubeView"-->
+    <!--class="com.google.android.youtube.player.YouTubePlayerView"-->
+    <!--id="@+id/view"-->
+    <!--layout_width="match_parent"-->
+    <!--android:layout_width="wrap_content"-->
+    <!--android:layout_height="wrap_content" />-->
+
+</LinearLayout>
+
+<!--playlist 레이아웃 18/05/07_H-->
+<RelativeLayout
+    android:id="@+id/activity_main"
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    tools:context=".Tab2">
+    android:layout_height="400dp"
 
-</android.support.constraint.ConstraintLayout>
+    tools:context="com.midi.midi.MainActivity">
+
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/recyclerview"
+        android:layout_width="match_parent"
+        android:layout_height="170dp"
+        android:scrollbars="vertical"/>
+
+</RelativeLayout>
+<!--playlist 레이아웃 끝_H-->
+
+
+<!--player 정원0508-->
+<LinearLayout
+    android:id="@+id/lin_miniplayer"
+    android:layout_width="match_parent"
+    android:layout_height="58dp"
+    android:background="@android:color/darker_gray"
+    android:gravity="center_vertical"
+    android:orientation="horizontal"
+    android:padding="3dp"
+    android:layout_marginTop="5dp">
+
+    <ImageView
+        android:id="@+id/img_albumart"
+        android:layout_width="38dp"
+        android:layout_height="45dp"
+        android:layout_marginLeft="5dp"
+        android:scaleType="fitXY"
+        android:src="@drawable/empty_albumart"
+        android:layout_weight="0.03" />
+
+    <TextView
+        android:id="@+id/txt_title"
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_marginLeft="5dp"
+        android:layout_weight="1"
+        android:gravity="center_vertical"
+        android:text="Sample Title"
+        android:textColor="@android:color/black"/>
+
+    <ImageButton
+        android:id="@+id/btn_rewind"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:background="?attr/selectableItemBackground"
+        android:src="@drawable/rewind"/>
+
+    <ImageButton
+        android:id="@+id/btn_play_pause"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:background="?attr/selectableItemBackground"
+        android:src="@drawable/play"/>
+
+    <ImageButton
+        android:id="@+id/btn_forward"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:background="?attr/selectableItemBackground"
+        android:src="@drawable/forward"/>
+</LinearLayout>
+<!--player 기능 끝-->
+
+</LinearLayout>
+
