@@ -9,7 +9,7 @@
     android:paddingLeft="@dimen/activity_vertical_margin"
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
-    tools:context="com.midi.midi.MainActivity"
+    tools:context="com.midi.midi.Tab1"
     android:weightSum="1">
 
     <LinearLayout
@@ -17,12 +17,12 @@
         android:layout_height="193dp"
         android:orientation="vertical">
 
-       <!-- <Button
-            android:id="@+id/backBtn"
-            android:layout_width="40dp"
-            android:layout_height="40dp"
-            android:layout_gravity="end"
-            android:text="<-" /> -->
+        <!-- <Button
+             android:id="@+id/backBtn"
+             android:layout_width="40dp"
+             android:layout_height="40dp"
+             android:layout_gravity="end"
+             android:text="<-" /> -->
 
 
         <Button
@@ -66,12 +66,12 @@
         android:orientation="vertical">
 
         <!--<view-->
-            <!--android:id="@+id/youtubeView"-->
-            <!--class="com.google.android.youtube.player.YouTubePlayerView"-->
-            <!--id="@+id/view"-->
-            <!--layout_width="match_parent"-->
-            <!--android:layout_width="wrap_content"-->
-            <!--android:layout_height="wrap_content" />-->
+        <!--android:id="@+id/youtubeView"-->
+        <!--class="com.google.android.youtube.player.YouTubePlayerView"-->
+        <!--id="@+id/view"-->
+        <!--layout_width="match_parent"-->
+        <!--android:layout_width="wrap_content"-->
+        <!--android:layout_height="wrap_content" />-->
 
         <Button
             android:id="@+id/btn_playList"
@@ -151,7 +151,7 @@
             android:layout_height="40dp"
             android:background="?attr/selectableItemBackground"
             android:src="@drawable/forward"/>
-        </LinearLayout>
+    </LinearLayout>
     <!--player 기능 끝-->
 
 </LinearLayout>
