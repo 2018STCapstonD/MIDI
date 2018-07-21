@@ -45,9 +45,14 @@
         <activity
             android:name=".LoginActivity"
             android:label="Midi" />
+
         <activity
             android:name=".MainActivity"
-            android:label="Midi" />
+            android:label="@string/title_activity_swipe"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity android:name=".Tab1" />
+        <activity android:name=".Tab2" />
+        <activity android:name=".Tab3" />
 
         <service
             android:name=".AudioService"
@@ -56,13 +61,6 @@
 
         <activity android:name=".ReturnToMainPageFromRecommend" />
         <activity android:name=".ReturnToMainPageFromMusicList" />
-        <activity
-            android:name=".MainActivity"
-            android:label="@string/title_activity_swipe"
-            android:theme="@style/AppTheme.NoActionBar" />
-        <activity android:name=".Tab1" />
-        <activity android:name=".Tab2" />
-        <activity android:name=".Tab3" />
     </application>
 
 </manifest>
