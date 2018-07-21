@@ -64,7 +64,7 @@ public class LoginActivity  extends Activity {
     }
 
     protected void redirectSignupActivity() {       //세션 연결 성공 시 MainActivity로 넘김
-        final Intent intent = new Intent(this, MainActivity.class);
+        final Intent intent = new Intent(this, SwipeActivity.class);
         intent.setFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
         startActivity(intent);
         finish();

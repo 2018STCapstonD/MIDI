@@ -2,23 +2,38 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.midi.midi">
 
-    <!--android:name=".AudioApplication"-->
-    <!--application에 위의 주석 부분 추가해야함..!-->
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.RECORD_AUDIO" />
+    <!-- 퍼미션 인터넷, 미디어장소 동적 권한요청 -->
+
+
+    <!-- wakeMode퍼미션 추가_정원05/08 -->
+    <!-- 시스템이 휴면모드로 진입하게 될 시 player에 생길 수있는 문제 예방 -->
+    <uses-permission android:name="android.permission.WAKE_LOCK" />
+    <uses-permission android:name="android.permission.MODIFY_AUDIO_SETTINGS" />
+    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
+
+    <!-- android:name=".AudioApplication" -->
+    <!-- application에 위의 주석 부분 추가해야함..! -->
     <application
+        android:name=".AudioApplication"
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
-        android:theme="@style/AppTheme"
-        android:name=".AudioApplication">
+        android:theme="@style/AppTheme">
 
-        <!--splashActivity 추가 2018-03-29 YH-->
+        <!-- splashActivity 추가 2018-03-29 YH -->
 
-        <activity android:name="com.midi.midi.SplashActivity"
+        <activity
+            android:name=".SplashActivity"
             android:theme="@style/SplashActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
+
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
@@ -27,40 +42,27 @@
             android:name="com.kakao.sdk.AppKey"
             android:value="@string/kakao_app_key" />
 
-        <activity android:name=".LoginActivity"
-            android:label="Midi">
-        </activity>
-
-        <activity android:name=".MainActivity"
-            android:label="Midi">
-        </activity>
+        <activity
+            android:name=".LoginActivity"
+            android:label="Midi" />
+        <activity
+            android:name=".MainActivity"
+            android:label="Midi" />
 
         <service
             android:name=".AudioService"
             android:enabled="true"
-            android:exported="true">
-        </service>
+            android:exported="true" />
 
-        <activity android:name=".ReturnToMainPageFromRecommend"/>
-        <activity android:name=".ReturnToMainPageFromMusicList"/>
+        <activity android:name=".ReturnToMainPageFromRecommend" />
+        <activity android:name=".ReturnToMainPageFromMusicList" />
+        <activity
+            android:name=".SwipeActivity"
+            android:label="@string/title_activity_swipe"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity android:name=".Tab1" />
+        <activity android:name=".Tab2" />
+        <activity android:name=".Tab3" />
     </application>
-
-
-    <uses-permission android:name="android.permission.INTERNET"/>
-    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
-    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/>
-
-    <uses-permission android:name="android.permission.RECORD_AUDIO" />
-    <!--퍼미션 인터넷, 미디어장소 동적 권한요청-->
-
-    <!--wakeMode퍼미션 추가_정원05/08-->
-    <!--시스템이 휴면모드로 진입하게 될 시 player에 생길 수있는 문제 예방-->
-    <uses-permission android:name="android.permission.WAKE_LOCK"/>
-    <uses-permission android:name="android.permission.MODIFY_AUDIO_SETTINGS" />
-
-    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" >
-    </uses-permission>
-
-
 
 </manifest>
