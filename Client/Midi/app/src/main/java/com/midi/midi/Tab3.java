@@ -83,7 +83,7 @@ public class Tab3 extends Fragment {
                         int playedCount = dbHelper.getPlayedCount(Long.valueOf(_id));
                         double rating = 100 * playedCount/totalCount;
 
-                        socketOut.println(kakao_id + "::" + title + "::" + album + "::" + artist + "::" + rating);
+                        socketOut.println(kakao_id + "|" + title + "|" + album + "|" + artist + "|" + rating);
                     }
 
                     myHandler = new MyHandler();

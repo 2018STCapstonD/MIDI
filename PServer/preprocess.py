@@ -1,10 +1,26 @@
 import pandas as pd
 import hashlib
 
-dataframe = pd.read_csv('tempdata.csv', sep="|", encoding = 'utf8', header='infer')
+#새로 받은 데이터 오픈
+tempdf = pd.read_csv('tempdata.csv', sep = "|", encoding = 'utf8', header='infer')
 
-to_hash = (dataframe["title"]+dataframe["album"])
+#기존 데이터 오픈
+df = pd.read_csv('data.csv', sep = "|", encoding = 'utf8', header='infer')
 
-dataframe["musicID"] = to_hash.apply(hash)
+#제목+앨범명으로 해시값 생성해 추가.
+#환경변수 PYTHONHASHSEED = 0 꼭 설정할것!!
+to_hash = (tempdf["title"]+tempdf["album"])
+tempdf["musicID"] = to_hash.apply(hash)
+tempdf.columns = ["kakao_id","title","album","artist","rating","musicID"]
 
-print(dataframe)
+for row in tempdf.iterrows():
+    #한줄씩 실행
+    #일치하는 ID가 있으면 rating만 갱신, 없으면 데이터 추가
+    to_append = row[1].to_frame().T
+    if df.loc[df['musicID'] == row[1].musicID].empty :
+        df = df.append(to_append)
+    else :
+        df.loc[df['musicID'] == row[1].musicID,'rating'] = row[1].rating
+
+#데이터 저장
+df.to_csv('data.csv', sep = "|", encoding = 'utf8', header='infer')
