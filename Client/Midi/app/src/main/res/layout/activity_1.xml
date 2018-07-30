@@ -12,48 +12,6 @@
     tools:context="com.midi.midi.Tab1"
     android:weightSum="1">
 
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="193dp"
-        android:orientation="vertical">
-
-        <!-- <Button
-             android:id="@+id/backBtn"
-             android:layout_width="40dp"
-             android:layout_height="40dp"
-             android:layout_gravity="end"
-             android:text="<-" /> -->
-
-
-        <Button
-            android:id="@+id/btn_recommendPlayList"
-            android:layout_width="match_parent"
-            android:layout_height="50dp"
-            android:text="Recommended Play List" />
-
-
-        <Button
-            android:id="@+id/withdraw"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="탈퇴" />
-
-
-        <Button
-            android:id="@+id/sendDataBtn"
-            android:layout_width="100dp"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="150dp"
-            android:text="서버로 전송" />
-
-        <TextView
-            android:id="@+id/tv"
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:text=" -> print music list" />
-
-    </LinearLayout>
-
     <ProgressBar
         android:id="@+id/progressBar"
         style="?android:attr/progressBarStyleHorizontal"
@@ -102,24 +60,24 @@
 
 
     <!--player 정원0508-->
-    <LinearLayout
-        android:id="@+id/lin_miniplayer"
-        android:layout_width="match_parent"
-        android:layout_height="58dp"
-        android:background="@android:color/darker_gray"
-        android:gravity="center_vertical"
-        android:orientation="horizontal"
-        android:padding="3dp"
-        android:layout_marginTop="5dp">
+        <LinearLayout
+            android:id="@+id/lin_miniplayer"
+            android:layout_width="match_parent"
+            android:layout_height="58dp"
+            android:background="@android:color/darker_gray"
+            android:gravity="center_vertical"
+            android:orientation="horizontal"
+            android:padding="3dp"
+            android:layout_marginTop="5dp">
 
-        <ImageView
-            android:id="@+id/img_albumart"
-            android:layout_width="38dp"
-            android:layout_height="45dp"
-            android:layout_marginLeft="5dp"
-            android:scaleType="fitXY"
-            android:src="@drawable/empty_albumart"
-            android:layout_weight="0.03" />
+            <ImageView
+                android:id="@+id/img_albumart"
+                android:layout_width="38dp"
+                android:layout_height="45dp"
+                android:layout_marginLeft="5dp"
+                android:scaleType="fitXY"
+                android:src="@drawable/empty_albumart"
+                android:layout_weight="0.03" />
 
         <TextView
             android:id="@+id/txt_title"
