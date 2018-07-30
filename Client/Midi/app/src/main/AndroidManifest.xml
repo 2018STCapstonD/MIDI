@@ -46,13 +46,6 @@
             android:name=".LoginActivity"
             android:label="Midi" />
 
-        <service
-            android:name=".AudioService"
-            android:enabled="true"
-            android:exported="true" />
-
-        <activity android:name=".ReturnToMainPageFromRecommend" />
-        <activity android:name=".ReturnToMainPageFromMusicList" />
         <activity
             android:name=".MainActivity"
             android:label="@string/title_activity_swipe"
@@ -60,6 +53,14 @@
         <activity android:name=".Tab1" />
         <activity android:name=".Tab2" />
         <activity android:name=".Tab3" />
+
+        <service
+            android:name=".AudioService"
+            android:enabled="true"
+            android:exported="true" />
+
+        <activity android:name=".ReturnToMainPageFromRecommend" />
+        <activity android:name=".ReturnToMainPageFromMusicList" />
     </application>
 
 </manifest>
