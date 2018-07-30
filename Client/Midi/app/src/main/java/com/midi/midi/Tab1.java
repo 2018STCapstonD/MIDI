@@ -74,37 +74,17 @@ public class Tab1 extends Fragment implements View.OnClickListener{
     private Thread myThread;
     private DBHelper dbHelper;
 
-    public Tab1(Context context, DBHelper dbHelper){
+    public Tab1(Context context, DBHelper dbHelper, ArrayList<String[]> musicList, AudioAdapter mAdapter){
         mContext = context;
         this.dbHelper = dbHelper;
+        this.musicList = musicList;
+        this.mAdapter = mAdapter;
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState){
         requestMe();
         View view = inflater.inflate(R.layout.activity_1,null);
-
-        // OS가 Marshmallow 이상일 경우 권한체크를 해야 합니다.
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            if (ActivityCompat.checkSelfPermission(mContext, Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
-                ActivityCompat.requestPermissions(this.getActivity(), new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, 1000);
-            } else {
-                // READ_EXTERNAL_STORAGE 에 대한 권한이 있음.
-                getAudioListFromMediaDatabase(); //여기
-            }
-        }
-        // OS가 Marshmallow 이전일 경우 권한체크를 하지 않는다.
-        else {
-            getAudioListFromMediaDatabase();
-        }
-
-        Button withdraw = (Button) view.findViewById(R.id.withdraw);
-        withdraw.setOnClickListener(new View.OnClickListener(){
-            @Override
-            public void onClick(View v) {
-                onClickUnlink();
-            }
-        });
 
         Button sendDataBtn = (Button) view.findViewById(R.id.sendDataBtn);
         sendDataBtn.setOnClickListener(new View.OnClickListener(){
@@ -145,7 +125,7 @@ public class Tab1 extends Fragment implements View.OnClickListener{
 
         //        RecyclerView와 AudioAdapter를 연결하여 실제 데이터를 표시 추가_18/05/07_H
         mRecyclerView = (RecyclerView) view.findViewById(R.id.recyclerview);
-        mAdapter = new AudioAdapter(mContext, null);
+        //mAdapter = new AudioAdapter(mContext, null);
         mRecyclerView.setAdapter(mAdapter);
         LinearLayoutManager layoutManager = new LinearLayoutManager(mContext);
         layoutManager.setOrientation(LinearLayoutManager.VERTICAL);
@@ -163,8 +143,7 @@ public class Tab1 extends Fragment implements View.OnClickListener{
 
         registerBroadcast();
         updateUI();
-
-
+        
         return view;
     }
     /*********** 기능에 필요한 클래스 정의 ************/
@@ -190,59 +169,6 @@ public class Tab1 extends Fragment implements View.OnClickListener{
                 AudioApplication.getmInstance().getServiceInterface().forward();
                 break;
         }
-    }
-
-    @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-            // READ_EXTERNAL_STORAGE 에 대한 권한 획득.
-            getAudioListFromMediaDatabase(); //여기
-        }
-    }
-
-    private void getAudioListFromMediaDatabase() {
-        getLoaderManager().initLoader(3, null, new LoaderManager.LoaderCallbacks<Cursor>() {
-            @Override
-            public Loader<Cursor> onCreateLoader(int id, Bundle args) {
-                Uri uri = MediaStore.Audio.Media.EXTERNAL_CONTENT_URI;
-                String[] projection = new String[]{
-                        MediaStore.Audio.Media.TITLE,
-                        MediaStore.Audio.Media.ARTIST,
-                        MediaStore.Audio.Media.ALBUM,
-                        MediaStore.Audio.Media.ALBUM_ID,
-                        MediaStore.Audio.Media.DURATION,
-                        MediaStore.Audio.Media._ID,
-                        MediaStore.Audio.Media.DATA
-                };
-                String selection = MediaStore.Audio.Media.IS_MUSIC + " = 1";
-                String sortOrder = MediaStore.Audio.Media.TITLE + " COLLATE LOCALIZED ASC";
-                return new CursorLoader(mContext, uri, projection, selection, null, sortOrder);
-            }
-
-            @Override
-            public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
-//                파일 불러와서 로그찍기_18/05/07_H
-                if (data != null && data.getCount() > 0) {
-                    musicList = new ArrayList<String[]>();
-                    while (data.moveToNext()) {
-                        String title = data.getString(data.getColumnIndex(MediaStore.Audio.Media.TITLE));
-                        String album = data.getString(data.getColumnIndex(MediaStore.Audio.Media.ALBUM));
-                        String artist = data.getString(data.getColumnIndex(MediaStore.Audio.Media.ARTIST));
-                        String _id = data.getString(data.getColumnIndex(MediaStore.Audio.Media._ID));
-
-                        musicList.add(new String[]{title, album, artist, _id});
-                    }
-                }
-                //만들어진 AudioAdapter에 LoaderManager를 통해 불러온 오디오 목록이 담긴 Cursor를 적용_18/05/07_H
-                mAdapter.swapCursor(data);
-            }
-
-            @Override
-            public void onLoaderReset(Loader<Cursor> loader) {
-                mAdapter.swapCursor(null);
-            }
-        });
     }
 
     //정원추가0508

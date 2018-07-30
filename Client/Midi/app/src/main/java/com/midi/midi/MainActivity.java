@@ -1,9 +1,20 @@
 package com.midi.midi;
 
+import android.Manifest;
+import android.app.LoaderManager;
 import android.content.Context;
+import android.content.CursorLoader;
+import android.content.Loader;
+import android.content.pm.PackageManager;
+import android.database.Cursor;
+import android.net.Uri;
+import android.os.Build;
+import android.provider.MediaStore;
+import android.support.annotation.NonNull;
 import android.support.design.widget.TabLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
+import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.support.v4.app.Fragment;
@@ -18,6 +29,8 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import android.widget.TextView;
+
+import java.util.ArrayList;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -35,8 +48,10 @@ public class MainActivity extends AppCompatActivity {
      * The {@link ViewPager} that will host the section contents.
      */
     private ViewPager mViewPager;
-    private Context mContext;
+    private static Context mContext;
     private DBHelper dbHelper;
+    private AudioAdapter mAdapter;
+    private static ArrayList<String[]> musicList;
 
         @Override
         protected void onCreate(Bundle savedInstanceState) {
@@ -45,6 +60,21 @@ public class MainActivity extends AppCompatActivity {
 
             mContext = getApplicationContext();
             dbHelper = new DBHelper(mContext, "played.db", null, 1);
+            mAdapter = new AudioAdapter(mContext, null);
+
+            // OS가 Marshmallow 이상일 경우 권한체크를 해야 합니다.
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                if (ActivityCompat.checkSelfPermission(mContext, Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+                    ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, 1000);
+                } else {
+                    // READ_EXTERNAL_STORAGE 에 대한 권한이 있음.
+                    getAudioListFromMediaDatabase(); //여기
+                }
+            }
+            // OS가 Marshmallow 이전일 경우 권한체크를 하지 않는다.
+            else {
+                getAudioListFromMediaDatabase();
+            }
 
             Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
             setSupportActionBar(toolbar);
@@ -71,6 +101,15 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+            // READ_EXTERNAL_STORAGE 에 대한 권한 획득.
+            getAudioListFromMediaDatabase(); //여기
+        }
+    }
+
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -94,6 +133,49 @@ public class MainActivity extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
+    public void getAudioListFromMediaDatabase() {
+        getLoaderManager().initLoader(3, null, new LoaderManager.LoaderCallbacks<Cursor>() {
+            @Override
+            public Loader<Cursor> onCreateLoader(int id, Bundle args) {
+                Uri uri = MediaStore.Audio.Media.EXTERNAL_CONTENT_URI;
+                String[] projection = new String[]{
+                        MediaStore.Audio.Media.TITLE,
+                        MediaStore.Audio.Media.ARTIST,
+                        MediaStore.Audio.Media.ALBUM,
+                        MediaStore.Audio.Media.ALBUM_ID,
+                        MediaStore.Audio.Media.DURATION,
+                        MediaStore.Audio.Media._ID,
+                        MediaStore.Audio.Media.DATA
+                };
+                String selection = MediaStore.Audio.Media.IS_MUSIC + " = 1";
+                String sortOrder = MediaStore.Audio.Media.TITLE + " COLLATE LOCALIZED ASC";
+                return new CursorLoader(mContext, uri, projection, selection, null, sortOrder);
+            }
+
+            @Override
+            public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
+//                파일 불러와서 로그찍기_18/05/07_H
+                if (data != null && data.getCount() > 0) {
+                    musicList = new ArrayList<String[]>();
+                    while (data.moveToNext()) {
+                        String title = data.getString(data.getColumnIndex(MediaStore.Audio.Media.TITLE));
+                        String album = data.getString(data.getColumnIndex(MediaStore.Audio.Media.ALBUM));
+                        String artist = data.getString(data.getColumnIndex(MediaStore.Audio.Media.ARTIST));
+                        String _id = data.getString(data.getColumnIndex(MediaStore.Audio.Media._ID));
+
+                        musicList.add(new String[]{title, album, artist, _id});
+                    }
+                }
+                //만들어진 AudioAdapter에 LoaderManager를 통해 불러온 오디오 목록이 담긴 Cursor를 적용_18/05/07_H
+                mAdapter.swapCursor(data);
+            }
+
+            @Override
+            public void onLoaderReset(Loader<Cursor> loader) {
+                mAdapter.swapCursor(null);
+            }
+        });
+    }
     /**
      * A placeholder fragment containing a simple view.
      */
@@ -123,6 +205,7 @@ public class MainActivity extends AppCompatActivity {
         public View onCreateView(LayoutInflater inflater, ViewGroup container,
                                  Bundle savedInstanceState) {
             View rootView = inflater.inflate(R.layout.fragment_swipe, container, false);
+
             TextView textView = (TextView) rootView.findViewById(R.id.section_label);
             textView.setText(getString(R.string.section_format, getArguments().getInt(ARG_SECTION_NUMBER)));
             return rootView;
@@ -145,7 +228,7 @@ public class MainActivity extends AppCompatActivity {
             // Return a PlaceholderFragment (defined as a static inner class below).
             switch (position) {
                 case 0:
-                    return new Tab1(mContext, dbHelper);
+                    return new Tab1(mContext, dbHelper, musicList, mAdapter);
                 case 1:
                     return new Tab2(mContext);
                 case 2:
