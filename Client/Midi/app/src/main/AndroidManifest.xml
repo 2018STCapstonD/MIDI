@@ -45,9 +45,6 @@
         <activity
             android:name=".LoginActivity"
             android:label="Midi" />
-        <activity
-            android:name=".MainActivity"
-            android:label="Midi" />
 
         <service
             android:name=".AudioService"

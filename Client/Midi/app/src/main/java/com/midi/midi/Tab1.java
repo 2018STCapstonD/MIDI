@@ -83,49 +83,10 @@ public class Tab1 extends Fragment implements View.OnClickListener{
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState){
-        requestMe();
         View view = inflater.inflate(R.layout.activity_1,null);
-
-        Button sendDataBtn = (Button) view.findViewById(R.id.sendDataBtn);
-        sendDataBtn.setOnClickListener(new View.OnClickListener(){
-            @Override
-            public void onClick(View view) {
-                try{
-                    clientSocket = new Socket();
-                    clientSocket.connect(new InetSocketAddress(ip, port), 3000);
-                    socketIn = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
-                    socketOut = new PrintWriter(clientSocket.getOutputStream(), true);
-                    int totalCount = dbHelper.getTotalCount();
-
-                    for(int i=0;i<musicList.size();i++){
-                        String title = musicList.get(i)[0].replace("%","%%");
-                        String album = musicList.get(i)[1].replace("%","%%");
-                        String artist = musicList.get(i)[2].replace("%","%%");
-                        String _id = musicList.get(i)[3].replace("%","%%");
-
-                        int playedCount = dbHelper.getPlayedCount(Long.valueOf(_id));
-                        double rating = 100 * playedCount/totalCount;
-
-                        socketOut.println(kakao_id + "::" + title + "::" + album + "::" + artist + "::" + rating);
-                    }
-
-                    myHandler = new MyHandler();
-                    myThread = new MyThread();
-                    myThread.start();
-                    myThread.interrupt();
-                }catch(IOException e){
-                    Toast.makeText(mContext, "Internal Server Error", Toast.LENGTH_LONG).show();
-                    e.printStackTrace();
-                }catch(ArithmeticException e){
-                    //totalCount가 0일 시
-                    Toast.makeText(mContext, "보낼 데이터가 존재하지 않습니다.", Toast.LENGTH_LONG).show();
-                }
-            }
-        });
 
         //        RecyclerView와 AudioAdapter를 연결하여 실제 데이터를 표시 추가_18/05/07_H
         mRecyclerView = (RecyclerView) view.findViewById(R.id.recyclerview);
-        //mAdapter = new AudioAdapter(mContext, null);
         mRecyclerView.setAdapter(mAdapter);
         LinearLayoutManager layoutManager = new LinearLayoutManager(mContext);
         layoutManager.setOrientation(LinearLayoutManager.VERTICAL);
@@ -143,7 +104,8 @@ public class Tab1 extends Fragment implements View.OnClickListener{
 
         registerBroadcast();
         updateUI();
-        
+
+
         return view;
     }
     /*********** 기능에 필요한 클래스 정의 ************/
@@ -214,111 +176,4 @@ public class Tab1 extends Fragment implements View.OnClickListener{
         getActivity().unregisterReceiver(mBroadcastReceiver);
     }
 
-
-    //탈퇴관련
-    public void onClickUnlink() {
-        final String appendMessage = getString(R.string.com_kakao_confirm_unlink);
-        new AlertDialog.Builder(mContext)
-                .setMessage(appendMessage)
-                .setPositiveButton(getString(R.string.com_kakao_ok_button),
-                        new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int which) {
-                                UserManagement.getInstance().requestUnlink(new UnLinkResponseCallback() {
-                                    @Override
-                                    public void onFailure(ErrorResult errorResult) {
-                                        Logger.e(errorResult.toString());
-                                    }
-
-                                    @Override
-                                    public void onSessionClosed(ErrorResult errorResult) {
-                                        redirectLoginActivity();
-                                    }
-
-                                    @Override
-                                    public void onNotSignedUp() {
-                                        //redirectSignupActivity();
-                                    }
-
-                                    @Override
-                                    public void onSuccess(Long userId) {
-                                        redirectLoginActivity();
-                                    }
-                                });
-                                dialog.dismiss();
-                            }
-                        })
-                .setNegativeButton(getString(R.string.com_kakao_cancel_button),
-                        new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int which) {
-                                dialog.dismiss();
-                            }
-                        }).show();
-
-    }
-    public void redirectLoginActivity(){
-        final Intent intent = new Intent(mContext, LoginActivity.class);
-        startActivity(intent);
-        getActivity().finish();
-    }
-
-    class MyThread extends Thread{
-        boolean flag = true;
-        @Override
-        public void run(){
-            while(flag){
-                try{
-                    String data = socketIn.readLine();
-                    Message msg = myHandler.obtainMessage();
-                    msg.obj = data;
-                    myHandler.sendMessage(msg);
-                }
-                catch(Exception e){
-                    e.printStackTrace();
-                }
-            }
-        }
-        @Override
-        public void interrupt(){
-            try{
-                flag = false;
-                socketIn.close();
-                socketOut.close();
-                clientSocket.close();
-            }catch(Exception e){
-                e.printStackTrace();
-            }
-        }
-    }
-    class MyHandler extends Handler{
-        @Override
-        public void handleMessage(Message msg){}
-    }
-
-    public void requestMe() {
-        //유저의 정보 받아오기
-        UserManagement.getInstance().requestMe(new MeResponseCallback() {
-            @Override
-            public void onFailure(ErrorResult errorResult) {
-//                super.onFailure(errorResult);
-            }
-
-            @Override
-            public void onSessionClosed(ErrorResult errorResult) {
-                String message = "받아오기 실패 : " + errorResult;
-                Logger.e(message);
-            }
-
-            @Override
-            public void onNotSignedUp() {
-                //카카오톡 회원이 아닐시
-            }
-
-            @Override
-            public void onSuccess(UserProfile result) {
-                kakao_id = result.getId();
-            }
-        });
-    }
 }

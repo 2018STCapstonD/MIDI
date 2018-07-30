@@ -232,7 +232,7 @@ public class MainActivity extends AppCompatActivity {
                 case 1:
                     return new Tab2(mContext);
                 case 2:
-                    return new Tab3(mContext);
+                    return new Tab3(mContext, dbHelper, musicList);
                 default :
                     return null;
             }
