@@ -7,15 +7,14 @@ tempdf = pd.read_csv('C:/Users/ITS_1/Documents/MIDI/PServer/tempdata.csv', sep =
 
 #기존 데이터 오픈
 try:
-    df = pd.read_csv('data.csv', sep = "|", encoding = 'utf8', header='infer')
+    df = pd.read_csv('C:/Users/ITS_1/Documents/MIDI/PServer/data.csv', sep = "\t", encoding = 'utf8', header='infer')
 except FileNotFoundError :
     f = open("C:/Users/ITS_1/Documents/MIDI/PServer/data.csv", 'a')
-    f.write("kakao_id|title|album|artist|rating|musicID")
+    f.write("kakao_id"+"\t"+"title"+"\t"+"album"+"\t"+"artist"+"\t"+"rating"+"\t"+"musicID")
     f.close()
-    df = pd.read_csv('C:/Users/ITS_1/Documents/MIDI/PServer/data.csv', sep = "|", encoding = 'utf8', header='infer')
+    df = pd.read_csv('C:/Users/ITS_1/Documents/MIDI/PServer/data.csv', sep = "\t", encoding = 'utf8', header='infer')
 
-#제목+앨범명으로 해시값 생성해 추가.
-#환경변수 PYTHONHASHSEED = 0 꼭 설정할것
+print(tempdf.tail)
 tempdf.columns = ["kakao_id","title","album","artist","rating","musicID"]
 
 
@@ -29,4 +28,4 @@ for row in tempdf.iterrows():
         df.loc[(df['musicID'] == row[1].musicID) & (df['kakao_id'] == row[1].kakao_id), 'rating'] = row[1].rating
 
 #데이터 저장
-df.to_csv('C:/Users/ITS_1/Documents/MIDI/PServer/data.csv', sep = "|", encoding = 'utf8', header='infer', index=False)
+df.to_csv('C:/Users/ITS_1/Documents/MIDI/PServer/data.csv', sep = "\t", encoding = 'utf8', header='infer', index=False)
