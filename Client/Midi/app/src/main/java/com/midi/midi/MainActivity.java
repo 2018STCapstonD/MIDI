@@ -230,7 +230,7 @@ public class MainActivity extends AppCompatActivity {
                 case 0:
                     return new Tab1(mContext, dbHelper, musicList, mAdapter);
                 case 1:
-                    return new Tab2(mContext);
+                    return new Tab2(mContext, mAdapter);
                 case 2:
                     return new Tab3(mContext, dbHelper, musicList);
                 default :

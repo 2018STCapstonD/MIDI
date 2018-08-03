@@ -68,16 +68,16 @@
                 android:src="@drawable/rewind"/>
 
             <ImageButton
-                android:id="@+id/play"
+                android:id="@+id/play_pause"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:src="@drawable/play"/>
 
-            <ImageButton
-                android:id="@+id/pause"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:src="@drawable/pause" />
+            <!--<ImageButton-->
+                <!--android:id="@+id/pause"-->
+                <!--android:layout_width="wrap_content"-->
+                <!--android:layout_height="wrap_content"-->
+                <!--android:src="@drawable/pause" />-->
 
 
             <ImageButton
