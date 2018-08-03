@@ -1,23 +1,23 @@
 import pandas as pd
-import hashlib
+import os
 
+f_path = 'C:/Users/ITS_1/Documents/MIDI/PServer'
 #새로 받은 데이터 오픈
-tempdf = pd.read_csv('tempdata.csv', sep = "|", encoding = 'utf8', header='infer')
+tempdf = pd.read_csv('C:/Users/ITS_1/Documents/MIDI/PServer/tempdata.csv', sep = "\t", encoding = 'utf8', header='infer')
 
 #기존 데이터 오픈
 try:
     df = pd.read_csv('data.csv', sep = "|", encoding = 'utf8', header='infer')
 except FileNotFoundError :
-    f = open("data.csv", 'a')
+    f = open("C:/Users/ITS_1/Documents/MIDI/PServer/data.csv", 'a')
     f.write("kakao_id|title|album|artist|rating|musicID")
     f.close()
-    df = pd.read_csv('data.csv', sep = "|", encoding = 'utf8', header='infer')
+    df = pd.read_csv('C:/Users/ITS_1/Documents/MIDI/PServer/data.csv', sep = "|", encoding = 'utf8', header='infer')
 
 #제목+앨범명으로 해시값 생성해 추가.
-#환경변수 PYTHONHASHSEED = 0 꼭 설정할것!!
-to_hash = (tempdf["title"]+tempdf["album"])
-tempdf["musicID"] = to_hash.apply(hash)
+#환경변수 PYTHONHASHSEED = 0 꼭 설정할것
 tempdf.columns = ["kakao_id","title","album","artist","rating","musicID"]
+
 
 for row in tempdf.iterrows():
     #한줄씩 실행
@@ -29,4 +29,4 @@ for row in tempdf.iterrows():
         df.loc[(df['musicID'] == row[1].musicID) & (df['kakao_id'] == row[1].kakao_id), 'rating'] = row[1].rating
 
 #데이터 저장
-df.to_csv('data.csv', sep = "|", encoding = 'utf8', header='infer', index=False)
+df.to_csv('C:/Users/ITS_1/Documents/MIDI/PServer/data.csv', sep = "|", encoding = 'utf8', header='infer', index=False)

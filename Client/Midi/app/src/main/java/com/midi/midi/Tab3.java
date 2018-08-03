@@ -81,9 +81,11 @@ public class Tab3 extends Fragment {
                         String _id = musicList.get(i)[3].replace("%","%%");
 
                         int playedCount = dbHelper.getPlayedCount(Long.valueOf(_id));
-                        double rating = 100 * playedCount/totalCount;
 
-                        socketOut.println(kakao_id + "|" + title + "|" + album + "|" + artist + "|" + rating);
+                        double rating = Math.random() * 4 + 1;
+                        //double rating = 100 * playedCount/totalCount;
+
+                        socketOut.println(kakao_id + "\t" + title + "\t" + album + "\t" + artist + "\t" + rating);
                     }
 
                     myHandler = new MyHandler();

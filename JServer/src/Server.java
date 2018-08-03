@@ -35,7 +35,6 @@ class TCPServerThread extends Thread{
 	public void run() {
 		try {
 			String s = "";
-			ProcessBuilder pb = new ProcessBuilder("python","..\\..\\PServer\\preprocess.py");
 			BufferedWriter bufWr = Files.newBufferedWriter(Paths.get("..\\..\\PServer\\tempdata.csv"));
 			
 			InetAddress inetAddr = sock.getInetAddress();
@@ -43,18 +42,26 @@ class TCPServerThread extends Thread{
 			
 			BufferedReader in = new BufferedReader(new InputStreamReader(sock.getInputStream())); 
 			PrintWriter out = new PrintWriter(sock.getOutputStream(), true);
-			bufWr.write("kakao_id|title|album|artist|rating\n");
+			bufWr.write("kakao_id"+"\t"+"title"+"\t"+"album"+"\t"+"artist"+"\t"+"rating"+"\t"+"musicID"+"\n");
 			while((s = in.readLine()) != null){
-				bufWr.write(s+"\n");
-				System.out.println(s);
+				String[] data = s.split("\t");
+				int to_hash = (data[1]+data[2]).hashCode(); 
+				bufWr.write(s+"\t"+to_hash+"\n");
+				System.out.println(s+"\n");
 			}
-			pb.start();
 			out.close();
 			in.close();
 			bufWr.close();
 			sock.close();
 		}catch(Exception e) {
 			e.printStackTrace();
+		}
+		finally {
+			try {
+	            ProcessBuilder pb = new ProcessBuilder("python","C:\\Users\\ITS_1\\Documents\\MIDI\\PServer\\preprocess.py");
+	            pb.start();
+			}
+			catch(IOException e) {}
 		}
 	}
 }
