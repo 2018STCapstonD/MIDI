@@ -6,6 +6,7 @@ import java.io.PrintWriter;
 import java.net.InetAddress;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.net.URISyntaxException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 
@@ -35,7 +36,9 @@ class TCPServerThread extends Thread{
 	public void run() {
 		try {
 			String s = "";
-			BufferedWriter bufWr = Files.newBufferedWriter(Paths.get("..\\..\\PServer\\tempdata.csv"));
+			String path = Paths.get(this.getClass().getResource("").toURI()).toString();
+			System.out.println(path);
+			BufferedWriter bufWr = Files.newBufferedWriter(Paths.get(path+"\\..\\..\\PServer\\tempdata.csv"));
 			
 			InetAddress inetAddr = sock.getInetAddress();
 			System.out.println("접속 : " + inetAddr.getHostAddress());
@@ -58,7 +61,14 @@ class TCPServerThread extends Thread{
 		}
 		finally {
 			try {
-	            ProcessBuilder pb = new ProcessBuilder("python","C:\\Users\\ITS_1\\Documents\\MIDI\\PServer\\preprocess.py");
+	            String path = null;
+				try {
+					path = Paths.get(this.getClass().getResource("").toURI()).toString();
+				} catch (URISyntaxException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+				ProcessBuilder pb = new ProcessBuilder("python",path +"\\..\\..\\PServer\\preprocess.py");
 	            pb.start();
 			}
 			catch(IOException e) {}
