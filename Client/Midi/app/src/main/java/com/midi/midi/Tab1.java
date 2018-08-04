@@ -23,6 +23,7 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
+import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
@@ -63,6 +64,8 @@ public class Tab1 extends Fragment implements View.OnClickListener{
     private TextView mTxtTitle;
     private ImageButton mBtnPlayPause;
 
+    private ViewPager mViewPager;
+
     private static ArrayList<String[]> musicList;
 
     private Socket clientSocket;
@@ -75,11 +78,12 @@ public class Tab1 extends Fragment implements View.OnClickListener{
     private Thread myThread;
     private DBHelper dbHelper;
 
-    public Tab1(Context context, DBHelper dbHelper, ArrayList<String[]> musicList, AudioAdapter mAdapter){
+    public Tab1(Context context, DBHelper dbHelper, ArrayList<String[]> musicList, AudioAdapter mAdapter, ViewPager mViewPager){
         mContext = context;
         this.dbHelper = dbHelper;
         this.musicList = musicList;
         this.mAdapter = mAdapter;
+        this.mViewPager = mViewPager;
     }
 
     @Override
@@ -102,6 +106,13 @@ public class Tab1 extends Fragment implements View.OnClickListener{
         view.findViewById(R.id.btn_rewind).setOnClickListener(this);
         mBtnPlayPause.setOnClickListener(this);
         view.findViewById(R.id.btn_forward).setOnClickListener(this);
+
+        mTxtTitle.setOnClickListener(new View.OnClickListener(){
+            @Override
+            public void onClick(View v) {
+                mViewPager.setCurrentItem(1);
+            }
+        });
 
         registerBroadcast();
         updateUI();
