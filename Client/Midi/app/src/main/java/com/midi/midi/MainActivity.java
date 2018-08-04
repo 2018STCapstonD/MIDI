@@ -228,7 +228,7 @@ public class MainActivity extends AppCompatActivity {
             // Return a PlaceholderFragment (defined as a static inner class below).
             switch (position) {
                 case 0:
-                    return new Tab1(mContext, dbHelper, musicList, mAdapter, mViewPager);
+                    return new Tab1(mContext, mAdapter, mViewPager);
                 case 1:
                     return new Tab2(mContext, mAdapter);
                 case 2:

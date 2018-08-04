@@ -66,22 +66,8 @@ public class Tab1 extends Fragment implements View.OnClickListener{
 
     private ViewPager mViewPager;
 
-    private static ArrayList<String[]> musicList;
-
-    private Socket clientSocket;
-    private BufferedReader socketIn;
-    private PrintWriter socketOut;
-    private int port = 37771;
-    private final String ip = "117.17.198.39";
-    private long kakao_id;
-    private Handler myHandler;
-    private Thread myThread;
-    private DBHelper dbHelper;
-
-    public Tab1(Context context, DBHelper dbHelper, ArrayList<String[]> musicList, AudioAdapter mAdapter, ViewPager mViewPager){
+    public Tab1(Context context, AudioAdapter mAdapter, ViewPager mViewPager){
         mContext = context;
-        this.dbHelper = dbHelper;
-        this.musicList = musicList;
         this.mAdapter = mAdapter;
         this.mViewPager = mViewPager;
     }
