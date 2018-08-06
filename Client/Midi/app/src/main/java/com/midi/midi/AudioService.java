@@ -10,8 +10,6 @@ import android.os.Binder;
 import android.os.IBinder;
 import android.os.PowerManager;
 import android.provider.MediaStore;
-import android.support.annotation.Nullable;
-import android.util.Log;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -26,6 +24,9 @@ public class AudioService extends Service {
     private boolean isPrepared;
     private DBHelper dbHelper;
 
+    private NotificationPlayer mNotificationPlayer; //0806H_NotificationPlayer 기능 추가
+
+
     public class AudioServiceBinder extends Binder {
         AudioService getService() {
             return AudioService.this;
@@ -35,6 +36,8 @@ public class AudioService extends Service {
     @Override
     public void onCreate() {
         super.onCreate();
+        mMediaPlayer = new MediaPlayer();
+        
         dbHelper = new DBHelper(getApplicationContext(), "played.db", null, 1);
         mMediaPlayer = new MediaPlayer();
         mMediaPlayer.setWakeMode(getApplicationContext(), PowerManager.PARTIAL_WAKE_LOCK);
@@ -68,6 +71,8 @@ public class AudioService extends Service {
 
             }
         });
+
+        mNotificationPlayer = new NotificationPlayer(this); //멤버변수 선언
     }
 
     @Override
@@ -137,6 +142,22 @@ public class AudioService extends Service {
         mMediaPlayer.stop();
         mMediaPlayer.reset();
     }
+
+
+    private void updateNotificationPlayer() {
+        if (mNotificationPlayer != null) {
+            mNotificationPlayer.updateNotificationPlayer();
+        }
+    }
+
+    private void removeNotificationPlayer() {
+        if (mNotificationPlayer != null) {
+            mNotificationPlayer.removeNotificationPlayer();
+        }
+    }
+
+
+
 
     public void play(int position) {
         queryAudioItem(position);

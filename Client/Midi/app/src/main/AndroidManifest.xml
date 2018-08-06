@@ -58,9 +58,16 @@
             android:name=".AudioService"
             android:enabled="true"
             android:exported="true" />
-
         <activity android:name=".ReturnToMainPageFromRecommend" />
         <activity android:name=".ReturnToMainPageFromMusicList" />
+
+        <intent-filter>
+            <action android:name="REWIND"/>
+            <action android:name="TOGGLE_PLAY"/>
+            <action android:name="FORWARD"/>
+            <action android:name="CLOSE"/>
+        </intent-filter> //notification플레이어 버튼 정의
+
     </application>
 
 </manifest>
