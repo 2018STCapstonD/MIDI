@@ -16,6 +16,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.Toast;
 
 import com.kakao.network.ErrorResult;
@@ -63,7 +64,7 @@ public class Tab3 extends Fragment {
         StrictMode.setThreadPolicy(policy);
         requestMe();
 
-        Button sendDataBtn = (Button) view.findViewById(R.id.sendDataBtn);
+        ImageButton sendDataBtn = (ImageButton) view.findViewById(R.id.sendDataBtn);
         sendDataBtn.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View view) {

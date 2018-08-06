@@ -9,43 +9,55 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="193dp"
-        android:orientation="vertical">
+        android:orientation="vertical"
+        tools:layout_editor_absoluteX="0dp"
+        tools:layout_editor_absoluteY="0dp">
 
-        <!-- <Button
-             android:id="@+id/backBtn"
-             android:layout_width="40dp"
-             android:layout_height="40dp"
-             android:layout_gravity="end"
-             android:text="<-" /> -->
-
-
-        <Button
-            android:id="@+id/btn_recommendPlayList"
+        <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="50dp"
-            android:text="Recommended Play List" />
-
-
-        <Button
-            android:id="@+id/withdrawBtn"
-            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="탈퇴" />
+            android:orientation="horizontal"
+            android:gravity="center"
+            android:paddingTop="15dp">
 
+            <ImageButton
+                android:id="@+id/sendDataBtn"
+                android:layout_width="60dp"
+                android:layout_height="60dp"
+                android:background="@drawable/circle_border"
+                android:scaleType="fitCenter"
+                android:layout_marginLeft="150dp"
+                android:layout_marginRight="70dp"
+                android:src="@drawable/cloud_computing"
+                android:text="서버로 전송" />
 
-        <Button
-            android:id="@+id/sendDataBtn"
-            android:layout_width="100dp"
+            <Button
+                android:id="@+id/withdrawBtn"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="탈퇴" />
+        </LinearLayout>
+
+        <ProgressBar
+            style="?android:attr/progressBarStyleHorizontal"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="150dp"
-            android:text="서버로 전송" />
+            android:padding="10dp"/>
 
         <TextView
-            android:id="@+id/tv"
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:text=" -> print music list" />
+            android:layout_width="match_parent"
+            android:layout_height="40dp"
+            android:padding="5dp"
+            android:text="Recommended Music List"
+            android:textAlignment="center"
+            android:textSize="20dp"
+            android:textStyle="bold" />
 
+        <TextView
+            android:id="@+id/btn_recommendMusicList"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text=" -> print music list" />
     </LinearLayout>
 
 
