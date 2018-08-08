@@ -165,7 +165,9 @@ public class MainActivity extends AppCompatActivity {
                         String artist = data.getString(data.getColumnIndex(MediaStore.Audio.Media.ARTIST));
                         String _id = data.getString(data.getColumnIndex(MediaStore.Audio.Media._ID));
 
-                        musicList.add(new String[]{title, album, artist, _id});
+                        if(!(title.equals(null) || album.equals(null) || artist.equals(null))) {
+                            musicList.add(new String[]{title, album, artist, _id});
+                        }
                     }
                 }
                 //만들어진 AudioAdapter에 LoaderManager를 통해 불러온 오디오 목록이 담긴 Cursor를 적용_18/05/07_H

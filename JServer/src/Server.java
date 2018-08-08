@@ -48,9 +48,11 @@ class TCPServerThread extends Thread{
 			bufWr.write("kakao_id"+"\t"+"title"+"\t"+"album"+"\t"+"artist"+"\t"+"rating"+"\t"+"musicID"+"\n");
 			while((s = in.readLine()) != null){
 				String[] data = s.split("\t");
-				int to_hash = (data[1]+data[2]).hashCode(); 
-				bufWr.write(s+"\t"+to_hash+"\n");
-				System.out.println(s+"\n");
+				if(!(data[0].equals(null) | data[1].equals(null) | data[2].equals(null) | data[3].equals(null) | data[4].equals(null) | data[4].equals(null))) {
+					int to_hash = (data[1]+data[2]).hashCode(); 
+					bufWr.write(s+"\t"+to_hash+"\n");
+					System.out.println(s+"\n");
+				}
 			}
 			out.close();
 			in.close();

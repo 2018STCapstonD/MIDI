@@ -17,7 +17,6 @@ except FileNotFoundError :
 print(tempdf.tail)
 tempdf.columns = ["kakao_id","title","album","artist","rating","musicID"]
 
-
 for row in tempdf.iterrows():
     #한줄씩 실행
     #일치하는 ID가 있으면 rating만 갱신, 없으면 데이터 추가
