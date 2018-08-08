@@ -56,7 +56,7 @@ public class MainActivity extends AppCompatActivity {
         @Override
         protected void onCreate(Bundle savedInstanceState) {
             super.onCreate(savedInstanceState);
-            setContentView(R.layout.activity_swipe);
+            setContentView(R.layout.ac.layout.activity_swipe);
 
             mContext = getApplicationContext();
             dbHelper = new DBHelper(mContext, "played.db", null, 1);

@@ -18,7 +18,7 @@ public class NotificationPlayer {
     private final static int NOTIFICATION_PLAYER_ID = 0x342;
     private AudioService mService;
     private NotificationManager mNotificationManager;
-    private NotificationManagerBuilder;
+    private NotificationManagerBuilder mNotificationManagerBuilder;
     private boolean isForeground;
 
 
@@ -29,7 +29,7 @@ public class NotificationPlayer {
 
     public void updateNotificationPlayer() {
         cancel();
-        mNotificationManagerBuilder = new NotificationManagerBulder();
+        mNotificationManagerBuilder = new NotificationManagerBuilder();
         mNotificationManagerBuilder.execute();
     }
 

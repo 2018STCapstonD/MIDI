@@ -37,7 +37,7 @@ public class AudioService extends Service {
     public void onCreate() {
         super.onCreate();
         mMediaPlayer = new MediaPlayer();
-        
+
         dbHelper = new DBHelper(getApplicationContext(), "played.db", null, 1);
         mMediaPlayer = new MediaPlayer();
         mMediaPlayer.setWakeMode(getApplicationContext(), PowerManager.PARTIAL_WAKE_LOCK);
@@ -47,6 +47,7 @@ public class AudioService extends Service {
                 isPrepared = true;
                 mp.start();
                 sendBroadcast(new Intent(BroadcastActions.PREPARED)); //prepared전송
+                updateNotificationPlayer();
             }
         });
         mMediaPlayer.setOnCompletionListener(new MediaPlayer.OnCompletionListener(){
@@ -55,6 +56,7 @@ public class AudioService extends Service {
                 //isPrepared = false;
                 //sendBroadcast(new Intent(BroadcastActions.PLAY_STATE_CHANGED)); //재생상태 변경 전송
                 forward();
+                updateNotificationPlayer();
             }
         });
         mMediaPlayer.setOnErrorListener(new MediaPlayer.OnErrorListener(){
@@ -62,6 +64,7 @@ public class AudioService extends Service {
             public boolean onError(MediaPlayer mp, int what, int extra) {
                 isPrepared = false;
                 sendBroadcast(new Intent(BroadcastActions.PLAY_STATE_CHANGED)); //재생상태 변경 전송
+                updateNotificationPlayer();
                 return false;
             }
         });
@@ -78,6 +81,36 @@ public class AudioService extends Service {
     @Override
     public IBinder onBind(Intent intent) {
         return mBinder;
+    }
+
+/////
+    public class CommandActions {
+        public final static String REWIND = "REWIND";
+        public final static String TOGGLE_PLAY = "TOGGLE_PLAY";
+        public final static String FORWARD = "FORWARD";
+        public final static String CLOSE = "CLOSE";
+    }
+///
+    @Override
+    public int onStartCommand(Intent intent, int flags, int startId) {
+        if (intent != null) {
+            String action = intent.getAction();
+            if (CommandActions.TOGGLE_PLAY.equals(action)) {
+                if (isPlaying()) {
+                    pause();
+                } else {
+                    play();
+                }
+            } else if (CommandActions.REWIND.equals(action)) {
+                rewind();
+            } else if (CommandActions.FORWARD.equals(action)) {
+                forward();
+            } else if (CommandActions.CLOSE.equals(action)) {
+                pause();
+                removeNotificationPlayer();
+            }
+        }
+        return super.onStartCommand(intent, flags, startId);
     }
 
     @Override
@@ -171,6 +204,7 @@ public class AudioService extends Service {
         if(isPrepared){
             mMediaPlayer.start();
             sendBroadcast(new Intent(BroadcastActions.PLAY_STATE_CHANGED)); //재생상태 변경 전송
+            updateNotificationPlayer();
         }
     }
 
@@ -178,6 +212,7 @@ public class AudioService extends Service {
         if(isPrepared) {
             mMediaPlayer.pause();
             sendBroadcast(new Intent(BroadcastActions.PLAY_STATE_CHANGED)); //재생상태 변경 전송
+            updateNotificationPlayer();
         }
     }
 
