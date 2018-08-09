@@ -23,14 +23,6 @@
         android:layout_height="wrap_content"
         android:orientation="vertical">
 
-        <!--<view-->
-        <!--android:id="@+id/youtubeView"-->
-        <!--class="com.google.android.youtube.player.YouTubePlayerView"-->
-        <!--id="@+id/view"-->
-        <!--layout_width="match_parent"-->
-        <!--android:layout_width="wrap_content"-->
-        <!--android:layout_height="wrap_content" />-->
-
         <Button
             android:id="@+id/btn_playList"
             android:layout_width="match_parent"
