@@ -11,12 +11,10 @@ lines = spark.read.option("inferSchema", "true").option("header","true").option(
 
 (training, test) = lines.randomSplit([0.8,0.2])
 
-als = ALS(maxIter=10, rank=3, seed=10, nonnegative=True, regParam=10, userCol="kakao_id",itemCol="musicID",ratingCol="rating", coldStartStrategy="drop", implicitPrefs=False)
-model = als.fit(training)
-predictions = model.transform(test)
+als = ALS(maxIter=10, rank=3, seed=10, nonnegative=True, regParam=0.1, userCol="kakao_id",itemCol="musicID",ratingCol="rating", coldStartStrategy="drop", implicitPrefs=False)
+model = als.fit(lines)
 
 userRecs = model.recommendForAllUsers(10)
-userRecs.show()
 
 model.write().overwrite().save("model")
 userRecs.toPandas().to_csv("userRecs.txt", index=False, sep="\t")
