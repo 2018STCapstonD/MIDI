@@ -10,8 +10,6 @@ import android.os.Binder;
 import android.os.IBinder;
 import android.os.PowerManager;
 import android.provider.MediaStore;
-import android.support.annotation.Nullable;
-import android.util.Log;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -25,6 +23,8 @@ public class AudioService extends Service {
     private MediaPlayer mMediaPlayer;
     private boolean isPrepared;
     private DBHelper dbHelper;
+    private NotificationPlayer mNotificationPlayer;
+
 
     public class AudioServiceBinder extends Binder {
         AudioService getService() {
@@ -44,6 +44,8 @@ public class AudioService extends Service {
                 isPrepared = true;
                 mp.start();
                 sendBroadcast(new Intent(BroadcastActions.PREPARED)); //prepared전송
+                updateNotificationPlayer(); //08/14_H notification player, 음악상태 변경시 broad
+
             }
         });
         mMediaPlayer.setOnCompletionListener(new MediaPlayer.OnCompletionListener(){
@@ -52,6 +54,8 @@ public class AudioService extends Service {
                 //isPrepared = false;
                 //sendBroadcast(new Intent(BroadcastActions.PLAY_STATE_CHANGED)); //재생상태 변경 전송
                 forward();
+                updateNotificationPlayer();
+
             }
         });
         mMediaPlayer.setOnErrorListener(new MediaPlayer.OnErrorListener(){
@@ -59,6 +63,7 @@ public class AudioService extends Service {
             public boolean onError(MediaPlayer mp, int what, int extra) {
                 isPrepared = false;
                 sendBroadcast(new Intent(BroadcastActions.PLAY_STATE_CHANGED)); //재생상태 변경 전송
+                updateNotificationPlayer();
                 return false;
             }
         });
@@ -68,12 +73,59 @@ public class AudioService extends Service {
 
             }
         });
+        mNotificationPlayer = new NotificationPlayer(this);
     }
+
+    private void updateNotificationPlayer() {
+        if (mNotificationPlayer != null) {
+            mNotificationPlayer.updateNotificationPlayer();
+        }
+    }
+
+    private void removeNotificationPlayer() {
+        if (mNotificationPlayer != null) {
+            mNotificationPlayer.removeNotificationPlayer();
+        }
+    }
+
+
 
     @Override
     public IBinder onBind(Intent intent) {
         return mBinder;
     }
+
+
+    @Override
+    public int onStartCommand(Intent intent, int flags, int startId) {
+        if (intent != null) {
+            String action = intent.getAction();
+            if (CommandActions.TOGGLE_PLAY.equals(action)) {
+                if (isPlaying()) {
+                    pause();
+                } else {
+                    play();
+                }
+            } else if (CommandActions.REWIND.equals(action)) {
+                rewind();
+            } else if (CommandActions.FORWARD.equals(action)) {
+                forward();
+            } else if (CommandActions.CLOSE.equals(action)) {
+                pause();
+                removeNotificationPlayer();
+            }
+        }
+        return super.onStartCommand(intent, flags, startId);
+    }
+
+    public class CommandActions {
+        public final static String REWIND = "REWIND";
+        public final static String TOGGLE_PLAY = "TOGGLE_PLAY";
+        public final static String FORWARD = "FORWARD";
+        public final static String CLOSE = "CLOSE";
+    }
+
+
 
     @Override
     public void onDestroy() {
@@ -150,6 +202,7 @@ public class AudioService extends Service {
         if(isPrepared){
             mMediaPlayer.start();
             sendBroadcast(new Intent(BroadcastActions.PLAY_STATE_CHANGED)); //재생상태 변경 전송
+            updateNotificationPlayer();
         }
     }
 
@@ -157,6 +210,7 @@ public class AudioService extends Service {
         if(isPrepared) {
             mMediaPlayer.pause();
             sendBroadcast(new Intent(BroadcastActions.PLAY_STATE_CHANGED)); //재생상태 변경 전송
+            updateNotificationPlayer();
         }
     }
 
