@@ -1,0 +1,1 @@
+{"class":"org.apache.spark.ml.recommendation.ALSModel","timestamp":1534243411635,"sparkVersion":"2.3.1","uid":"ALS_4022b9cc8027e2127f4d","paramMap":{"userCol":"kakao_id","coldStartStrategy":"drop","itemCol":"musicID","predictionCol":"prediction"},"rank":3}
