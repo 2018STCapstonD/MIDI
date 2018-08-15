@@ -91,6 +91,7 @@ public class MainActivity extends AppCompatActivity {
         mViewPager.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(tabLayout));
         tabLayout.addOnTabSelectedListener(new TabLayout.ViewPagerOnTabSelectedListener(mViewPager));
 
+        /* 안씀
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -99,6 +100,7 @@ public class MainActivity extends AppCompatActivity {
                         .setAction("Action", null).show();
             }
         });
+        */
     }
 
     @Override
@@ -163,7 +165,9 @@ public class MainActivity extends AppCompatActivity {
                         String artist = data.getString(data.getColumnIndex(MediaStore.Audio.Media.ARTIST));
                         String _id = data.getString(data.getColumnIndex(MediaStore.Audio.Media._ID));
 
-                        musicList.add(new String[]{title, album, artist, _id});
+                        if(!(title.equals(null) || album.equals(null) || artist.equals(null))) {
+                            musicList.add(new String[]{title, album, artist, _id});
+                        }
                     }
                 }
                 //만들어진 AudioAdapter에 LoaderManager를 통해 불러온 오디오 목록이 담긴 Cursor를 적용_18/05/07_H
@@ -228,9 +232,9 @@ public class MainActivity extends AppCompatActivity {
             // Return a PlaceholderFragment (defined as a static inner class below).
             switch (position) {
                 case 0:
-                    return new Tab1(mContext, dbHelper, musicList, mAdapter);
+                    return new Tab1(mContext, mAdapter, mViewPager);
                 case 1:
-                    return new Tab2(mContext);
+                    return new Tab2(mContext, mAdapter);
                 case 2:
                     return new Tab3(mContext, dbHelper, musicList);
                 default :

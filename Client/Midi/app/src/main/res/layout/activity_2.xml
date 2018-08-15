@@ -1,9 +1,93 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<!--정원작성_0730-->
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".Tab2">
+    android:orientation="vertical"
+    android:background="#d5d6d6">
 
-</android.support.constraint.ConstraintLayout>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_weight="2"
+        android:background="#3dffffff">
+
+        <ImageView
+            android:id="@+id/img_albumart"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:padding="8dp"
+            android:scaleType="fitXY"
+            android:src="@drawable/empty_albumart"
+            />
+    </LinearLayout>
+
+    <TextView
+        android:id="@+id/title"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:padding="3dp"
+        android:background="#d5d6d6"
+        android:gravity="center"
+        android:textSize="20dp"
+        android:textColor="#000000"
+        />
+
+    <LinearLayout
+        android:id="@+id/lin_miniplayer"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_weight="4"
+        android:gravity="center"
+        android:background="#d5d6d6"
+        android:padding="10dp"
+        android:orientation="vertical">
+
+        <!--<LinearLayout-->
+            <!--android:layout_width="wrap_content"-->
+            <!--android:layout_height="wrap_content"-->
+            <!--android:paddingBottom="10dp">-->
+            <!--<SeekBar-->
+                <!--android:id="@+id/seekbar"-->
+                <!--android:layout_width="350dp"-->
+                <!--android:layout_height="wrap_content"/>-->
+        <!--</LinearLayout>-->
+
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:paddingBottom="50dp"
+            android:orientation="horizontal">
+
+            <ImageButton
+                android:id="@+id/rewind"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/rewind"/>
+
+            <ImageButton
+                android:id="@+id/play_pause"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/play"/>
+
+            <!--<ImageButton-->
+                <!--android:id="@+id/pause"-->
+                <!--android:layout_width="wrap_content"-->
+                <!--android:layout_height="wrap_content"-->
+                <!--android:src="@drawable/pause" />-->
+
+
+            <ImageButton
+                android:id="@+id/forward"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/forward"/>
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+</LinearLayout>

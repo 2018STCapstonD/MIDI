@@ -28,5 +28,5 @@ for row in tempdf.iterrows():
 
 musicdf = df[['title', 'artist', 'album', 'musicID']].drop_duplicates('musicID',keep='first')
 #데이터 저장
-#df.to_csv(f_path+'/data.csv', sep = "\t", encoding = 'utf8', header='infer', index=False)
+df.to_csv(f_path+'/data.csv', sep = "\t", encoding = 'utf8', header='infer', index=False)
 musicdf.to_csv('musicdata.csv', sep='\t', encoding = 'utf8', header='infer', index=False)
