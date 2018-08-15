@@ -26,5 +26,7 @@ for row in tempdf.iterrows():
     else:
         df.loc[(df['musicID'] == row[1].musicID) & (df['kakao_id'] == row[1].kakao_id), 'rating'] = row[1].rating
 
+musicdf = df[['title', 'artist', 'album', 'musicID']].drop_duplicates('musicID',keep='first')
 #데이터 저장
 df.to_csv(f_path+'/data.csv', sep = "\t", encoding = 'utf8', header='infer', index=False)
+musicdf.to_csv('musicdata.csv', sep='\t', encoding = 'utf8', header='infer', index=False)
