@@ -70,7 +70,7 @@ public class Tab3 extends Fragment {
             @Override
             public void onClick(View view) {
                 try{
-                    String socIn = "";
+                    String s = "";
                     clientSocket = new Socket();
                     clientSocket.connect(new InetSocketAddress(ip, port), 3000);
                     socketIn = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
@@ -91,8 +91,14 @@ public class Tab3 extends Fragment {
                         socketOut.println(kakao_id + "\t" + title + "\t" + album + "\t" + artist + "\t" + rating);
                     }
 
-                    while(!(socIn = socketIn.readLine()).equals("end")){
-                        Log.e("tag", socIn);
+                    while(!(s = socketIn.readLine()).equals("end")){
+                        String data[] = s.split("\t");
+                        String title = data[0];
+                        String album = data[1];
+                        String artist = data[2];
+                        Log.e("title : ", title);
+                        Log.e("album : ", album);
+                        Log.e("artist : ", artist);
                     }
                     myHandler = new MyHandler();
                     myThread = new MyThread();
@@ -173,7 +179,6 @@ public class Tab3 extends Fragment {
             while(flag){
                 try{
                     String data= socketIn.readLine();
-                    Log.e("data", data);
                     Message msg = myHandler.obtainMessage();
                     msg.obj = data;
                     myHandler.sendMessage(msg);
