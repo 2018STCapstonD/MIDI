@@ -12,6 +12,7 @@ import android.os.StrictMode;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -69,6 +70,7 @@ public class Tab3 extends Fragment {
             @Override
             public void onClick(View view) {
                 try{
+                    String socIn = "";
                     clientSocket = new Socket();
                     clientSocket.connect(new InetSocketAddress(ip, port), 3000);
                     socketIn = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
@@ -89,6 +91,9 @@ public class Tab3 extends Fragment {
                         socketOut.println(kakao_id + "\t" + title + "\t" + album + "\t" + artist + "\t" + rating);
                     }
 
+                    while(!(socIn = socketIn.readLine()).equals("end")){
+                        Log.e("tag", socIn);
+                    }
                     myHandler = new MyHandler();
                     myThread = new MyThread();
                     myThread.start();
@@ -167,7 +172,8 @@ public class Tab3 extends Fragment {
         public void run(){
             while(flag){
                 try{
-                    String data = socketIn.readLine();
+                    String data= socketIn.readLine();
+                    Log.e("data", data);
                     Message msg = myHandler.obtainMessage();
                     msg.obj = data;
                     myHandler.sendMessage(msg);
@@ -191,7 +197,9 @@ public class Tab3 extends Fragment {
     }
     class MyHandler extends Handler{
         @Override
-        public void handleMessage(Message msg){}
+        public void handleMessage(Message msg){
+            Log.e("msg",msg.toString());
+        }
     }
 
     public void requestMe() {

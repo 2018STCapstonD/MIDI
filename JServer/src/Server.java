@@ -1,5 +1,6 @@
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
@@ -9,6 +10,7 @@ import java.net.Socket;
 import java.net.URISyntaxException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.util.Scanner;
 
 public class Server {
 	public static void main(String[] args) {
@@ -36,8 +38,11 @@ class TCPServerThread extends Thread{
 	public void run() {
 		try {
 			String s = "";
+			String kakao_id = "";
 			String path = Paths.get(this.getClass().getResource("").toURI()).toString();
-			System.out.println(path);
+			String musicIn = "";
+			BufferedReader bufRd = Files.newBufferedReader(Paths.get(path+"\\..\\..\\PServer\\userRecs.csv"));
+
 			BufferedWriter bufWr = Files.newBufferedWriter(Paths.get(path+"\\..\\..\\PServer\\tempdata.csv"));
 			
 			InetAddress inetAddr = sock.getInetAddress();
@@ -45,6 +50,8 @@ class TCPServerThread extends Thread{
 			
 			BufferedReader in = new BufferedReader(new InputStreamReader(sock.getInputStream())); 
 			PrintWriter out = new PrintWriter(sock.getOutputStream(), true);
+			
+			
 			bufWr.write("kakao_id"+"\t"+"title"+"\t"+"album"+"\t"+"artist"+"\t"+"rating"+"\t"+"musicID"+"\n");
 			while((s = in.readLine()) != null){
 				String[] data = s.split("\t");
@@ -53,13 +60,21 @@ class TCPServerThread extends Thread{
 					bufWr.write(s+"\t"+to_hash+"\n");
 					System.out.println(s+"\n");
 				}
+				kakao_id = data[0];
+				while((musicIn = bufRd.readLine()) != null) {
+					String[] musicInData = musicIn.split("\t");
+					if(musicInData[0].equals(kakao_id)) {
+						System.out.println(musicInData[1]+"\t"+musicInData[2]+"\t"+musicInData[3]);
+						out.println(musicInData[1]+"\t"+musicInData[2]+"\t"+musicInData[3]);
+					}
+				}
+				out.println("end");
 			}
-			out.close();
 			in.close();
+			out.close();
 			bufWr.close();
 			sock.close();
 		}catch(Exception e) {
-			e.printStackTrace();
 		}
 		finally {
 			try {
