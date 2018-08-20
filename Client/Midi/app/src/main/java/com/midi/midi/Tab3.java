@@ -6,12 +6,13 @@ import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.os.StrictMode;
 import android.support.v4.app.Fragment;
-import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -38,21 +39,26 @@ import java.util.ArrayList;
 @SuppressLint("ValidFragment")
 public class Tab3 extends Fragment {
     Context mContext;
+    private RecyclerView mRecyclerView;
+    private RecommendMusicAdapter mRecoMusicAdapter;
     private Socket clientSocket;
     private BufferedReader socketIn;
     private PrintWriter socketOut;
+    private ArrayList<String[]> musicList;
     private int port = 37771;
     private final String ip = "117.17.198.39";
     private long kakao_id;
     private Handler myHandler;
     private Thread myThread;
     private DBHelper dbHelper;
+    RecyclerView.LayoutManager mlayoutManager;
 
-    private static ArrayList<String[]> musicList;
+    private static ArrayList<String[]> recoMusicList;
 
 
-    public Tab3(Context context, DBHelper dbHelper, ArrayList<String[]> musicList){
+    public Tab3(Context context, RecommendMusicAdapter mRecoMusicAdapter, DBHelper dbHelper, ArrayList<String[]> musicList){
         mContext = context;
+        this.mRecoMusicAdapter = mRecoMusicAdapter;
         this.dbHelper = dbHelper;
         this.musicList = musicList;
     }
@@ -64,6 +70,17 @@ public class Tab3 extends Fragment {
         StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
         StrictMode.setThreadPolicy(policy);
         requestMe();
+
+
+        mRecyclerView = (RecyclerView) view.findViewById(R.id.tab3_recyclerview);
+        mRecyclerView.setHasFixedSize(true);
+        mlayoutManager = new LinearLayoutManager(mContext); //확인필요
+        mRecyclerView.setLayoutManager(mlayoutManager);
+        ArrayList<RecommendMusic> recoMusicArrayList = new ArrayList<>();
+        RecommendMusicAdapter mAdapter = new RecommendMusicAdapter(recoMusicArrayList);
+        mRecyclerView.setAdapter(RecommendMusicAdapter);
+
+
 
         ImageButton sendDataBtn = (ImageButton) view.findViewById(R.id.sendDataBtn);
         sendDataBtn.setOnClickListener(new View.OnClickListener(){
