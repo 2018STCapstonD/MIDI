@@ -10,8 +10,6 @@ import android.os.Binder;
 import android.os.IBinder;
 import android.os.PowerManager;
 import android.provider.MediaStore;
-import android.support.annotation.Nullable;
-import android.util.Log;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -25,6 +23,8 @@ public class AudioService extends Service {
     private MediaPlayer mMediaPlayer;
     private boolean isPrepared;
     private DBHelper dbHelper;
+    private NotificationPlayer mNotificationPlayer;
+
 
     public class AudioServiceBinder extends Binder {
         AudioService getService() {
@@ -44,15 +44,17 @@ public class AudioService extends Service {
                 isPrepared = true;
                 mp.start();
                 sendBroadcast(new Intent(BroadcastActions.PREPARED)); //prepared전송
+                updateNotificationPlayer();
             }
         });
         mMediaPlayer.setOnCompletionListener(new MediaPlayer.OnCompletionListener(){
             @Override
             public void onCompletion(MediaPlayer mp) {
-                //isPrepared = false;
-                //sendBroadcast(new Intent(BroadcastActions.PLAY_STATE_CHANGED)); //재생상태 변경 전송
-                forward();
-            }
+                isPrepared = false;
+                sendBroadcast(new Intent(BroadcastActions.PLAY_STATE_CHANGED)); //재생상태 변경 전송
+                //forward();
+                updateNotificationPlayer();
+            }//변경된 부분 0819 H
         });
         mMediaPlayer.setOnErrorListener(new MediaPlayer.OnErrorListener(){
             @Override
@@ -68,6 +70,30 @@ public class AudioService extends Service {
 
             }
         });
+        mNotificationPlayer = new NotificationPlayer(this);
+    }
+
+
+    @Override
+    public int onStartCommand(Intent intent, int flags, int startId) {
+        if (intent != null) {
+            String action = intent.getAction();
+            if (CommandActions.TOGGLE_PLAY.equals(action)) {
+                if (isPlaying()) {
+                    pause();
+                } else {
+                    play();
+                }
+            } else if (CommandActions.REWIND.equals(action)) {
+                rewind();
+            } else if (CommandActions.FORWARD.equals(action)) {
+                forward();
+            } else if (CommandActions.CLOSE.equals(action)) {
+                pause();
+                removeNotificationPlayer();
+            }
+        }
+        return super.onStartCommand(intent, flags, startId);
     }
 
     @Override
@@ -83,7 +109,24 @@ public class AudioService extends Service {
             mMediaPlayer.release();
             mMediaPlayer = null;
         }
+        removeNotificationPlayer();
+
     }
+
+
+    private void updateNotificationPlayer() {
+        if (mNotificationPlayer != null) {
+            mNotificationPlayer.updateNotificationPlayer();
+        }
+    }
+
+
+    private void removeNotificationPlayer() {
+        if (mNotificationPlayer != null) {
+            mNotificationPlayer.removeNotificationPlayer();
+        }
+    }
+
 
     private ArrayList<Long> mAudioIds = new ArrayList<>();
     public void setPlayList(ArrayList<Long> audioIds) {
