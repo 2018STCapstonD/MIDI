@@ -52,7 +52,7 @@ public class AudioService extends Service {
             public void onCompletion(MediaPlayer mp) {
                 isPrepared = false;
                 sendBroadcast(new Intent(BroadcastActions.PLAY_STATE_CHANGED)); //재생상태 변경 전송
-                //forward();
+                forward();
                 updateNotificationPlayer();
             }//변경된 부분 0819 H
         });

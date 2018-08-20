@@ -6,21 +6,10 @@ import android.app.PendingIntent;
 import android.content.ContentUris;
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.support.v4.app.NotificationCompat;
-import android.support.v4.app.NotificationCompat.Style;
-import android.support.v4.app.NotificationManagerCompat;
 import android.widget.RemoteViews;
-import android.support.v4.media.app.NotificationCompat.MediaStyle;
-import android.support.v4.content.ContextCompat;
-import android.support.v4.media.session.MediaSessionCompat;
-
-
-import com.squareup.picasso.Picasso;
-
-import java.io.IOException;
 
 
 
@@ -41,9 +30,10 @@ public class NotificationPlayer {
     @SuppressLint("StaticFieldLeak")
     public void updateNotificationPlayer() {
 
-
-
-
+        cancel();
+        mNotificationManagerBuilder = new NotificationManagerBuilder();
+        mNotificationManagerBuilder.execute();
+/*
         new AsyncTask<Void, Void, Void>() {
             @Override
             protected Void doInBackground(Void... params) {
@@ -93,6 +83,7 @@ public class NotificationPlayer {
                 return null;
             }
         }.execute();
+        */
     }
 
     public void removeNotificationPlayer() {
@@ -183,7 +174,7 @@ public class NotificationPlayer {
             String title = mService.getAudioItem().mTitle;
             remoteViews.setTextViewText(R.id.txt_title, title);
             Uri albumArtUri = ContentUris.withAppendedId(Uri.parse("content://media/external/audio/albumart"), mService.getAudioItem().mAlbumId);
-            Picasso.with(mService).load(albumArtUri).error(R.drawable.empty_albumart).into(remoteViews, R.id.img_albumart, NOTIFICATION_PLAYER_ID, notification);
+           // Picasso.with(mService).load(albumArtUri).error(R.drawable.empty_albumart).into(remoteViews, R.id.img_albumart, NOTIFICATION_PLAYER_ID, notification); //앨범아트 불러오는 문제부분
         }
     }
 }
