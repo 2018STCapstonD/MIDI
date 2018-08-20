@@ -11,12 +11,13 @@ import java.util.ArrayList;
 
 public class RecommendMusicAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>{
 
-    private static class MyViewHolder extends RecyclerView.ViewHolder{
-        private TextView title;
-        private TextView artist;
-        private TextView album;
+    public static class RecoViewHolder extends RecyclerView.ViewHolder{
 
-        MyViewHolder(View view){
+        public TextView title;
+        public TextView artist;
+        public TextView album;
+
+        RecoViewHolder(View view){
             super(view);
             title = view.findViewById(R.id.title);
             artist = view.findViewById(R.id.artist);
@@ -24,7 +25,7 @@ public class RecommendMusicAdapter extends RecyclerView.Adapter<RecyclerView.Vie
         }
     }
 
-    private ArrayList<RecommendMusic> recoMusicArrayList;
+    public ArrayList<RecommendMusic> recoMusicArrayList;
     RecommendMusicAdapter(ArrayList<RecommendMusic> recoMusicArrayList){
         this.recoMusicArrayList = recoMusicArrayList;
     }
@@ -34,16 +35,16 @@ public class RecommendMusicAdapter extends RecyclerView.Adapter<RecyclerView.Vie
     public RecyclerView.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.recommend_music, parent, false);
 
-        return new MyViewHolder(v);
+        return new RecoViewHolder(v);
     }
 
     @Override
     public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, int position) {
-        MyViewHolder myViewHolder = (MyViewHolder) holder;
+        RecoViewHolder recoViewHolder = (RecoViewHolder) holder;
 
-        myViewHolder.title.setText(recoMusicArrayList.get(position).title);
-        myViewHolder.artist.setText(recoMusicArrayList.get(position).artist);
-        myViewHolder.album.setText(recoMusicArrayList.get(position).album);
+        recoViewHolder.title.setText(recoMusicArrayList.get(position).title);
+        recoViewHolder.artist.setText(recoMusicArrayList.get(position).artist);
+        recoViewHolder.album.setText(recoMusicArrayList.get(position).album);
     }
 
     @Override

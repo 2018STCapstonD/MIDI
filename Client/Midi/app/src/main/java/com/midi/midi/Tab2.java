@@ -25,19 +25,13 @@ import com.squareup.picasso.Picasso;
 public class Tab2 extends Fragment implements View.OnClickListener {
     Context mContext;
 
-    private AudioAdapter mAdapter;
     private ImageView mImgAlbumArt;
     private TextView mTxtTitle;
     private ImageButton mBtnPlayPause;
 
-    private Handler myHandler;
-    private Thread myThread;
-    private DBHelper dbHelper;
 
-
-    public Tab2(Context context, AudioAdapter mAdapter) {
+    public Tab2(Context context) {
         mContext = context;
-        this.mAdapter = mAdapter;
     }
 
     @Override

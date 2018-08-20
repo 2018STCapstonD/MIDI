@@ -51,14 +51,11 @@ public class Tab3 extends Fragment {
     private Handler myHandler;
     private Thread myThread;
     private DBHelper dbHelper;
-    RecyclerView.LayoutManager mlayoutManager;
-
-    private static ArrayList<String[]> recoMusicList;
+    RecyclerView.LayoutManager mLayoutManager;
 
 
-    public Tab3(Context context, RecommendMusicAdapter mRecoMusicAdapter, DBHelper dbHelper, ArrayList<String[]> musicList){
+    public Tab3(Context context, DBHelper dbHelper, ArrayList<String[]> musicList){
         mContext = context;
-        this.mRecoMusicAdapter = mRecoMusicAdapter;
         this.dbHelper = dbHelper;
         this.musicList = musicList;
     }
@@ -72,11 +69,12 @@ public class Tab3 extends Fragment {
         requestMe();
 
 
-        mRecyclerView = (RecyclerView) view.findViewById(R.id.tab3_recyclerview);
+        mRecyclerView = view.findViewById(R.id.tab3_recyclerview);
         mRecyclerView.setHasFixedSize(true);
-        mlayoutManager = new LinearLayoutManager(mContext); //확인필요
-        mRecyclerView.setLayoutManager(mlayoutManager);
-        ArrayList<RecommendMusic> recoMusicArrayList = new ArrayList<>();
+        mLayoutManager = new LinearLayoutManager(mContext); //확인필요
+        mRecyclerView.setLayoutManager(mLayoutManager);
+
+        final ArrayList<RecommendMusic> recoMusicArrayList = new ArrayList<>();
         RecommendMusicAdapter mAdapter = new RecommendMusicAdapter(recoMusicArrayList);
         mRecyclerView.setAdapter(mRecoMusicAdapter);
 
@@ -113,8 +111,9 @@ public class Tab3 extends Fragment {
                         String album = data[1];
                         String artist = data[2];
                         Log.e("title : ", title);
-                        Log.e("album : ", album);
                         Log.e("artist : ", artist);
+                        Log.e("album : ", album);
+                        recoMusicArrayList.add(new RecommendMusic(title, artist, album));
                     }
                     myHandler = new MyHandler();
                     myThread = new MyThread();
