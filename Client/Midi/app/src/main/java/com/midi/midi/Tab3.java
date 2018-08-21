@@ -75,7 +75,7 @@ public class Tab3 extends Fragment {
         mRecyclerView.setLayoutManager(mLayoutManager);
 
         final ArrayList<RecommendMusic> recoMusicArrayList = new ArrayList<>();
-        RecommendMusicAdapter mAdapter = new RecommendMusicAdapter(recoMusicArrayList);
+        RecommendMusicAdapter mRecoMusicAdapter = new RecommendMusicAdapter(recoMusicArrayList);
         mRecyclerView.setAdapter(mRecoMusicAdapter);
 
 
