@@ -19,28 +19,30 @@
             android:layout_gravity="right"
             android:text="탈퇴" />
 
-        <ProgressBar
-            style="?android:attr/progressBarStyleHorizontal"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:paddingTop="10dp"
-            android:paddingBottom="10dp"/>
-
         <TextView
             android:layout_width="match_parent"
             android:layout_height="40dp"
             android:padding="5dp"
+            android:layout_marginTop="5dp"
+            android:layout_marginBottom="5dp"
             android:text="Recommended Music List"
             android:textAlignment="center"
             android:textSize="20dp"
-            android:textStyle="bold"/>
+            android:textStyle="bold"
+            android:background="@drawable/textview_border"/>
 
-        <TextView
-            android:id="@+id/btn_recommendMusicList"
+
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_weight="1"
-            android:text=" -> print music list" />
+            tools:context="com.midi.midi.MainActivity">
+                <android.support.v7.widget.RecyclerView
+                    android:id="@+id/tab3_recyclerview"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:scrollbars="vertical" />
+        </LinearLayout>
 
 
         <ImageButton
@@ -48,6 +50,7 @@
             android:layout_width="60dp"
             android:layout_height="60dp"
             android:layout_gravity="center"
+            android:layout_marginTop="5dp"
             android:background="@drawable/circle_border"
             android:scaleType="fitXY"
             android:src="@drawable/cloud_computing"

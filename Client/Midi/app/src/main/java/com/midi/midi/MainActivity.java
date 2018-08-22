@@ -51,6 +51,7 @@ public class MainActivity extends AppCompatActivity {
     private static Context mContext;
     private DBHelper dbHelper;
     private AudioAdapter mAdapter;
+    private RecommendMusicAdapter mRecoMusicAdapter;
     private static ArrayList<String[]> musicList;
 
         @Override
@@ -234,7 +235,7 @@ public class MainActivity extends AppCompatActivity {
                 case 0:
                     return new Tab1(mContext, mAdapter, mViewPager);
                 case 1:
-                    return new Tab2(mContext, mAdapter);
+                    return new Tab2(mContext);
                 case 2:
                     return new Tab3(mContext, dbHelper, musicList);
                 default :

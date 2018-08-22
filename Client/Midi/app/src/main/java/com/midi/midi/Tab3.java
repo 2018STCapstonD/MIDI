@@ -6,12 +6,13 @@ import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.os.StrictMode;
 import android.support.v4.app.Fragment;
-import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -38,17 +39,19 @@ import java.util.ArrayList;
 @SuppressLint("ValidFragment")
 public class Tab3 extends Fragment {
     Context mContext;
+    private RecyclerView mRecyclerView;
+    private RecommendMusicAdapter mRecoMusicAdapter;
     private Socket clientSocket;
     private BufferedReader socketIn;
     private PrintWriter socketOut;
+    private ArrayList<String[]> musicList;
     private int port = 37771;
     private final String ip = "117.17.198.39";
     private long kakao_id;
     private Handler myHandler;
     private Thread myThread;
     private DBHelper dbHelper;
-
-    private static ArrayList<String[]> musicList;
+    RecyclerView.LayoutManager mLayoutManager;
 
 
     public Tab3(Context context, DBHelper dbHelper, ArrayList<String[]> musicList){
@@ -64,6 +67,14 @@ public class Tab3 extends Fragment {
         StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
         StrictMode.setThreadPolicy(policy);
         requestMe();
+
+
+        mRecyclerView = (RecyclerView) view.findViewById(R.id.tab3_recyclerview);
+        mRecyclerView.setHasFixedSize(true);
+        mLayoutManager = new LinearLayoutManager(mContext); //확인필요
+        mRecyclerView.setLayoutManager(mLayoutManager);
+
+        final ArrayList<RecommendMusic> recoMusicArrayList = new ArrayList<>();
 
         ImageButton sendDataBtn = (ImageButton) view.findViewById(R.id.sendDataBtn);
         sendDataBtn.setOnClickListener(new View.OnClickListener(){
@@ -97,13 +108,18 @@ public class Tab3 extends Fragment {
                         String album = data[1];
                         String artist = data[2];
                         Log.e("title : ", title);
-                        Log.e("album : ", album);
                         Log.e("artist : ", artist);
+                        Log.e("album : ", album);
+                        recoMusicArrayList.add(new RecommendMusic(title, artist, album));
                     }
                     myHandler = new MyHandler();
                     myThread = new MyThread();
                     myThread.start();
                     myThread.interrupt();
+
+                    mRecoMusicAdapter = new RecommendMusicAdapter(recoMusicArrayList);
+                    mRecyclerView.setAdapter(mRecoMusicAdapter);
+
                 }catch(IOException e){
                     Toast.makeText(mContext, "Internal Server Error", Toast.LENGTH_LONG).show();
                     e.printStackTrace();
@@ -124,6 +140,8 @@ public class Tab3 extends Fragment {
 
         return view;
     }
+
+
     //탈퇴관련
     public void onClickUnlink() {
         final String appendMessage = getString(R.string.com_kakao_confirm_unlink);
