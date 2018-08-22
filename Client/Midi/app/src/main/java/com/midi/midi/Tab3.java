@@ -69,15 +69,12 @@ public class Tab3 extends Fragment {
         requestMe();
 
 
-        mRecyclerView = view.findViewById(R.id.tab3_recyclerview);
+        mRecyclerView = (RecyclerView) view.findViewById(R.id.tab3_recyclerview);
         mRecyclerView.setHasFixedSize(true);
         mLayoutManager = new LinearLayoutManager(mContext); //확인필요
         mRecyclerView.setLayoutManager(mLayoutManager);
 
         final ArrayList<RecommendMusic> recoMusicArrayList = new ArrayList<>();
-        RecommendMusicAdapter mRecoMusicAdapter = new RecommendMusicAdapter(recoMusicArrayList);
-        mRecyclerView.setAdapter(mRecoMusicAdapter);
-
 
         ImageButton sendDataBtn = (ImageButton) view.findViewById(R.id.sendDataBtn);
         sendDataBtn.setOnClickListener(new View.OnClickListener(){
@@ -119,6 +116,10 @@ public class Tab3 extends Fragment {
                     myThread = new MyThread();
                     myThread.start();
                     myThread.interrupt();
+
+                    mRecoMusicAdapter = new RecommendMusicAdapter(recoMusicArrayList);
+                    mRecyclerView.setAdapter(mRecoMusicAdapter);
+
                 }catch(IOException e){
                     Toast.makeText(mContext, "Internal Server Error", Toast.LENGTH_LONG).show();
                     e.printStackTrace();
@@ -139,6 +140,8 @@ public class Tab3 extends Fragment {
 
         return view;
     }
+
+
     //탈퇴관련
     public void onClickUnlink() {
         final String appendMessage = getString(R.string.com_kakao_confirm_unlink);
