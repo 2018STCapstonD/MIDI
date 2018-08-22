@@ -5,6 +5,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import java.util.ArrayList;
@@ -19,8 +20,8 @@ public class RecommendMusicAdapter extends RecyclerView.Adapter<RecyclerView.Vie
 
         RecoViewHolder(View view){
             super(view);
-            title = view.findViewById(R.id.title);
-            artist = view.findViewById(R.id.artist);
+            title = view.findViewById(R.id.txt_title);
+            artist = view.findViewById(R.id.txt_sub_title);
             album = view.findViewById(R.id.album);
         }
     }
