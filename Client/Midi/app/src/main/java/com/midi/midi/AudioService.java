@@ -143,7 +143,7 @@ public class AudioService extends Service {
         stop();
         prepare();
         //현재 플레이중인 음악 ID 저장
-        dbHelper.insert(mAudioIds.get(position));
+        dbHelper.insertPlayed(mAudioIds.get(position));
     }
 
     public void play() {
