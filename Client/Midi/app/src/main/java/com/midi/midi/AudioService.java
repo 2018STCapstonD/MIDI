@@ -10,8 +10,6 @@ import android.os.Binder;
 import android.os.IBinder;
 import android.os.PowerManager;
 import android.provider.MediaStore;
-import android.support.annotation.Nullable;
-import android.util.Log;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -189,3 +187,4 @@ public class AudioService extends Service {
     }
 
 }
+//to_do service tag 추가중, AudioService 수정중
