@@ -1,7 +1,7 @@
 import pandas as pd
 import os
 
-f_path = os.getcwd()
+f_path = "C:/Users/ITS_1/Documents/MIDI/PServer";
 #새로 받은 데이터 오픈
 tempdf = pd.read_csv(f_path+'/tempdata.csv', sep = "\t", encoding = 'utf8', header='infer')
 
@@ -29,4 +29,4 @@ for row in tempdf.iterrows():
 musicdf = df[['title', 'artist', 'album', 'musicID']].drop_duplicates('musicID',keep='first')
 #데이터 저장
 df.to_csv(f_path+'/data.csv', sep = "\t", encoding = 'utf8', header='infer', index=False)
-musicdf.to_csv('musicdata.csv', sep='\t', encoding = 'utf8', header='infer', index=False)
+musicdf.to_csv(f_path+'/musicdata.csv', sep='\t', encoding = 'utf8', header='infer', index=False)

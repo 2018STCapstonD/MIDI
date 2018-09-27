@@ -32,26 +32,30 @@ public class Server {
 
 class TCPServerThread extends Thread{
 	private Socket sock;
+	String s = "";
+	String kakao_id = "";
+	String path = "";
+	String musicIn = "";
+	BufferedReader bufRd = null;
+	BufferedWriter bufWr = null;
+	BufferedReader in = null;
+	PrintWriter out = null;
+	InetAddress inetAddr = null;
 	public TCPServerThread(Socket sock) {
 		this.sock = sock;
+		inetAddr = sock.getInetAddress();
 	}
 	public void run() {
 		try {
-			String s = "";
-			String kakao_id = "";
-			String path = Paths.get(this.getClass().getResource("").toURI()).toString();
-			String musicIn = "";
-			BufferedReader bufRd = Files.newBufferedReader(Paths.get(path+"\\..\\..\\PServer\\userRecs.csv"));
-
-			BufferedWriter bufWr = Files.newBufferedWriter(Paths.get(path+"\\..\\..\\PServer\\tempdata.csv"));
+			path = Paths.get(this.getClass().getResource("").toURI()).toString();
+			bufRd = Files.newBufferedReader(Paths.get(path+"\\..\\..\\PServer\\userRecs.csv"));
+			bufWr = Files.newBufferedWriter(Paths.get(path+"\\..\\..\\PServer\\tempdata.csv"));
 			
-			InetAddress inetAddr = sock.getInetAddress();
+			in = new BufferedReader(new InputStreamReader(sock.getInputStream())); 
+			out = new PrintWriter(sock.getOutputStream(), true);
+			
 			System.out.println("접속 : " + inetAddr.getHostAddress());
-			
-			BufferedReader in = new BufferedReader(new InputStreamReader(sock.getInputStream())); 
-			PrintWriter out = new PrintWriter(sock.getOutputStream(), true);
-			
-			
+
 			bufWr.write("kakao_id"+"\t"+"title"+"\t"+"album"+"\t"+"artist"+"\t"+"rating"+"\t"+"musicID"+"\n");
 			while((s = in.readLine()) != null){
 				String[] data = s.split("\t");
@@ -78,7 +82,7 @@ class TCPServerThread extends Thread{
 		}
 		finally {
 			try {
-	            String path = null;
+				String path = null;
 				try {
 					path = Paths.get(this.getClass().getResource("").toURI()).toString();
 				} catch (URISyntaxException e) {
@@ -86,7 +90,7 @@ class TCPServerThread extends Thread{
 					e.printStackTrace();
 				}
 				ProcessBuilder pb = new ProcessBuilder("python",path +"\\..\\..\\PServer\\preprocess.py");
-	            pb.start();
+				pb.start();
 			}
 			catch(IOException e) {}
 		}
