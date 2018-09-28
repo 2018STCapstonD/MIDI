@@ -74,6 +74,9 @@ public class NotificationPlayer {
                 builder.addAction(new android.support.v4.app.NotificationCompat.Action(R.drawable.close, "", close));
                 int[] actionsViewIndexs = new int[]{1,2,3};
                 builder.setStyle(new android.support.v4.media.app.NotificationCompat.MediaStyle().setShowActionsInCompactView(actionsViewIndexs));
+
+                //android.support.v4 이용 mediastyle
+
                 builder.setSmallIcon(R.drawable.empty_albumart);
 
                 Notification notification = builder.build();
