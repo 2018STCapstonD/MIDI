@@ -62,6 +62,7 @@ class TCPServerThread extends Thread{
 				if(!(data[0].equals(null) | data[1].equals(null) | data[2].equals(null) | data[3].equals(null) | data[4].equals(null) | data[4].equals(null))) {
 					int to_hash = (data[1]+data[2]).hashCode(); 
 					bufWr.write(s+"\t"+to_hash+"\n");
+					bufWr.flush();
 					System.out.println(s+"\n");
 				}
 				kakao_id = data[0];
