@@ -24,30 +24,30 @@
         android:textColor="@android:color/black"/>
 
     <ImageButton
-        android:id="@+id/"
-        android:layout_width="40dp"
-        android:layout_height="40dp"
+        android:id="@+id/btn_rewind"
+        android:layout_width="30dp"
+        android:layout_height="30dp"
         android:background="@null"
-        android:src="@drawable/rewind"/>
+        android:src="@drawable/noti_rewind" />
 
     <ImageButton
-        android:id="@+id/"
-        android:layout_width="40dp"
-        android:layout_height="40dp"
+        android:id="@+id/btn_play_pause"
+        android:layout_width="30dp"
+        android:layout_height="30dp"
         android:background="@null"
-        android:src="@drawable/play"/>
+        android:src="@drawable/noti_play" />
 
     <ImageButton
-        android:id="@+id/"
-        android:layout_width="40dp"
-        android:layout_height="40dp"
+        android:id="@+id/btn_forward"
+        android:layout_width="30dp"
+        android:layout_height="30dp"
         android:background="@null"
-        android:src="@drawable/forward"/>
+        android:src="@drawable/noti_forward" />
 
     <ImageButton
-        android:id="@+id/"
-        android:layout_width="40dp"
-        android:layout_height="40dp"
+        android:id="@+id/btn_close"
+        android:layout_width="30dp"
+        android:layout_height="30dp"
         android:background="@null"
-        android:src="@drawable/close"/>
+        android:src="@drawable/noti_close" />
 </LinearLayout>
