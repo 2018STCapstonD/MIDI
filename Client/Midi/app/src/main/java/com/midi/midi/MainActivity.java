@@ -54,6 +54,7 @@ public class MainActivity extends AppCompatActivity {
     private RecommendMusicAdapter mRecoMusicAdapter;
     private static ArrayList<String[]> musicList;
 
+
         @Override
         protected void onCreate(Bundle savedInstanceState) {
             super.onCreate(savedInstanceState);
@@ -62,6 +63,7 @@ public class MainActivity extends AppCompatActivity {
             mContext = getApplicationContext();
             dbHelper = new DBHelper(mContext, "played.db", null, 1);
             mAdapter = new AudioAdapter(mContext, null);
+
 
             // OS가 Marshmallow 이상일 경우 권한체크를 해야 합니다.
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {

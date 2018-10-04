@@ -6,17 +6,20 @@ import android.content.ContentUris;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.Handler;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.SeekBar;
 import android.widget.TextView;
 
 import com.squareup.picasso.Picasso;
@@ -28,7 +31,7 @@ public class Tab2 extends Fragment implements View.OnClickListener {
     private ImageView mImgAlbumArt;
     private TextView mTxtTitle;
     private ImageButton mBtnPlayPause;
-
+    private SeekBar seekBar;
 
     public Tab2(Context context) {
         mContext = context;
@@ -45,6 +48,26 @@ public class Tab2 extends Fragment implements View.OnClickListener {
         view.findViewById(R.id.rewind).setOnClickListener(this);
         mBtnPlayPause.setOnClickListener(this);
         view.findViewById(R.id.forward).setOnClickListener(this);
+        seekBar = (SeekBar) view.findViewById(R.id.seekbar);
+
+        seekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+            @Override
+            public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser){
+                Log.d("MAX : ", String.valueOf(seekBar.getMax()));
+                AudioApplication.getmInstance().getServiceInterface().seek(progress);
+                Log.d("progress : ",String.valueOf(progress));
+            }
+
+            @Override
+            public void onStartTrackingTouch(SeekBar seekBar) {
+
+            }
+
+            @Override
+            public void onStopTrackingTouch(SeekBar seekBar) {
+
+            }
+        });
 
         registerBroadcast();
         updateUI();
@@ -95,6 +118,7 @@ public class Tab2 extends Fragment implements View.OnClickListener {
             Uri albumArtUri = ContentUris.withAppendedId(Uri.parse("content://media/external/audio/albumart"), audioItem.mAlbumId);
             Picasso.with(mContext).load(albumArtUri).error(R.drawable.empty_albumart).into(mImgAlbumArt);
             mTxtTitle.setText(audioItem.mTitle);
+            seekBar.setMax((int)AudioApplication.getmInstance().getServiceInterface().getAudioItem().mDuration);
         } else {
             mImgAlbumArt.setImageResource(R.drawable.empty_albumart);
             mTxtTitle.setText("재생중인 음악이 없습니다.");

@@ -180,6 +180,10 @@ public class AudioService extends Service {
         sendBroadcast(new Intent(BroadcastActions.PLAY_STATE_CHANGED)); //재생상태 변경 전송
     }
 
+    public void seek(int progress){
+        mMediaPlayer.seekTo(progress);
+    }
+
     public AudioAdapter.AudioItem getAudioItem() {
         return mAudioItem;
     }

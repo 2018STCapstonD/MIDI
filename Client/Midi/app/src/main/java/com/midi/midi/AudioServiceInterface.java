@@ -69,6 +69,12 @@ public class AudioServiceInterface {
         }
     }
 
+    public void seek(int progress){
+        if(mService != null){
+            mService.seek(progress);
+        }
+    }
+
     public void togglePlay()
     {
         if(isPlaying()) {
