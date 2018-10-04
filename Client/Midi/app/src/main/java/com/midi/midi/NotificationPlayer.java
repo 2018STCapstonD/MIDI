@@ -18,7 +18,7 @@ import com.squareup.picasso.Picasso;
 
 import java.io.IOException;
 
-public class NotificationPlayer {
+    public class NotificationPlayer {
     private final static int NOTIFICATION_PLAYER_ID = 0x342;
     private AudioService mService;
     private NotificationManager mNotificationManager;
@@ -186,5 +186,30 @@ public class NotificationPlayer {
             Uri albumArtUri = ContentUris.withAppendedId(Uri.parse("content://media/external/audio/albumart"), mService.getAudioItem().mAlbumId);
             Picasso.with(mService).load(albumArtUri).error(R.drawable.empty_albumart).into(remoteViews, R.id.img_albumart, NOTIFICATION_PLAYER_ID, notification);
         }
+
+
+
+
+        //오레오 버전 위한 notificaation 채널 생성
+        @RequiresApi(Build.VERSION_CODES.O)
+        private void createChannel() {
+            NotificationManager
+                    mNotificationManager = (NotificationManager) mContext.getSystemService(Context.NOTIFICATION_SERVICE);
+            // The id of the channel.
+            String id = CHANNEL_ID;
+            // The user-visible name of the channel.
+            CharSequence name = "Media playback";
+            // The user-visible description of the channel.
+            String description = "Media playback controls";
+            int importance = NotificationManager.IMPORTANCE_LOW;
+            NotificationChannel mChannel = new NotificationChannel(id, name, importance);
+            // Configure the notification channel.
+            mChannel.setDescription(description);
+            mChannel.setShowBadge(false);
+            mChannel.setLockscreenVisibility(Notification.VISIBILITY_PUBLIC);
+            mNotificationManager.createNotificationChannel(mChannel);
+        }
+
+
     }
 }
