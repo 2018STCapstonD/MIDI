@@ -24,6 +24,8 @@ public class NotificationPlayer {
     private NotificationManager mNotificationManager;
     private NotificationManagerBuilder mNotificationManagerBuilder;
     private boolean isForeground;
+    private static final String CHANNEL_ID = "media_playback_channel";
+
 
     public NotificationPlayer(AudioService service) {
         mService = service;
