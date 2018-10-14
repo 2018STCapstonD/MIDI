@@ -60,12 +60,12 @@ public class Tab2 extends Fragment implements View.OnClickListener {
 
             @Override
             public void onStartTrackingTouch(SeekBar seekBar) {
-
+                seekBar.getProgress();
             }
 
             @Override
             public void onStopTrackingTouch(SeekBar seekBar) {
-
+                seekBar.getProgress();
             }
         });
 
@@ -83,12 +83,14 @@ public class Tab2 extends Fragment implements View.OnClickListener {
                 break;
             case R.id.rewind:
                 AudioApplication.getmInstance().getServiceInterface().rewind();
+                seekBar.setProgress(0);
                 break;
             case R.id.play_pause:
                 AudioApplication.getmInstance().getServiceInterface().togglePlay();
                 break;
             case R.id.forward:
                 AudioApplication.getmInstance().getServiceInterface().forward();
+                seekBar.setProgress(0);
                 break;
 
         }
