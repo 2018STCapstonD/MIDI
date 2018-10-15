@@ -6,14 +6,9 @@ import android.content.ContentUris;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.media.MediaPlayer;
 import android.net.Uri;
-import android.os.Handler;
-import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -32,6 +27,8 @@ public class Tab2 extends Fragment implements View.OnClickListener {
     private TextView mTxtTitle;
     private ImageButton mBtnPlayPause;
     private SeekBar seekBar;
+
+    private SeekBarThread sbThread;
 
     public Tab2(Context context) {
         mContext = context;
@@ -53,19 +50,20 @@ public class Tab2 extends Fragment implements View.OnClickListener {
         seekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser){
-                Log.d("MAX : ", String.valueOf(seekBar.getMax()));
-                AudioApplication.getmInstance().getServiceInterface().seek(progress);
-                Log.d("progress : ",String.valueOf(progress));
+                if(!fromUser)
+                    seekBar.setProgress(AudioApplication.getmInstance().getServiceInterface().getCurrentPosition());
+                else
+                    AudioApplication.getmInstance().getServiceInterface().seek(seekBar.getProgress());
             }
 
             @Override
             public void onStartTrackingTouch(SeekBar seekBar) {
-
+                sbThread.stopThread();
             }
 
             @Override
             public void onStopTrackingTouch(SeekBar seekBar) {
-
+                sbThread.resumeThread();
             }
         });
 
@@ -119,6 +117,9 @@ public class Tab2 extends Fragment implements View.OnClickListener {
             Picasso.with(mContext).load(albumArtUri).error(R.drawable.empty_albumart).into(mImgAlbumArt);
             mTxtTitle.setText(audioItem.mTitle);
             seekBar.setMax((int)AudioApplication.getmInstance().getServiceInterface().getAudioItem().mDuration);
+            seekBar.setProgress(0);
+            sbThread = new SeekBarThread();
+            sbThread.start();
         } else {
             mImgAlbumArt.setImageResource(R.drawable.empty_albumart);
             mTxtTitle.setText("재생중인 음악이 없습니다.");
@@ -135,5 +136,36 @@ public class Tab2 extends Fragment implements View.OnClickListener {
     public void unregisterBroadcast() {
         getActivity().unregisterReceiver(mBroadcastReceiver);
     }
-}
 
+    class SeekBarThread extends Thread{
+        private boolean stopFlag = false;
+        private boolean pauseFlag = false;
+
+        public synchronized void resumeThread() {
+            pauseFlag = false;
+            notify();
+        }
+        public void stopThread() {
+            stopFlag = true;
+        }
+        public void pause() {
+            pauseFlag = true;
+        }
+        @Override
+        public void run(){
+            try {
+                while(!stopFlag) {
+                    synchronized(this) {
+                        while(pauseFlag) {
+                            wait();
+                        }
+                    }
+                    while(!this.isInterrupted() && AudioApplication.getmInstance().getServiceInterface().isPlaying())
+                        seekBar.setProgress(AudioApplication.getmInstance().getServiceInterface().getCurrentPosition());
+                }
+            } catch(InterruptedException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+}

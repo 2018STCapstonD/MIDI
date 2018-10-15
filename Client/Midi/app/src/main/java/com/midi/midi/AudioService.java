@@ -192,4 +192,6 @@ public class AudioService extends Service {
         return mMediaPlayer.isPlaying();
     }
 
+    public int getCurrentPosition() { return mMediaPlayer.getCurrentPosition(); }
+
 }
