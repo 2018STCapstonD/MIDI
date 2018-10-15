@@ -1,7 +1,9 @@
 package com.midi.midi;
 
 
+import android.annotation.TargetApi;
 import android.app.Notification;
+import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.ContentUris;
@@ -10,6 +12,8 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.AsyncTask;
+import android.os.Build;
+import android.support.annotation.RequiresApi;
 import android.support.v4.app.NotificationCompat;
 import android.support.v4.app.NotificationManagerCompat;
 import android.widget.RemoteViews;
@@ -17,9 +21,11 @@ import android.widget.RemoteViews;
 import com.squareup.picasso.Picasso;
 
 import java.io.IOException;
+import java.lang.annotation.Target;
 
-    public class NotificationPlayer {
+public class NotificationPlayer {
     private final static int NOTIFICATION_PLAYER_ID = 0x342;
+    private Context mContext;
     private AudioService mService;
     private NotificationManager mNotificationManager;
     private NotificationManagerBuilder mNotificationManagerBuilder;
@@ -27,8 +33,9 @@ import java.io.IOException;
     private static final String CHANNEL_ID = "media_playback_channel";
 
 
-    public NotificationPlayer(AudioService service) {
+    public NotificationPlayer(AudioService service, Context mContext) {
         mService = service;
+        this.mContext = mContext;
         mNotificationManager = (NotificationManager) service.getSystemService(Context.NOTIFICATION_SERVICE);
     }
 
@@ -62,8 +69,24 @@ import java.io.IOException;
                 PendingIntent rewind = PendingIntent.getService(mService, 0, actionRewind, 0);
                 PendingIntent close = PendingIntent.getService(mService, 0, actionClose, 0);
 
+                if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
+                    // The id of the channel.
+                    String id = CHANNEL_ID;
+                    // The user-visible name of the channel.
+                    CharSequence name = "Media playback";
+                    // The user-visible description of the channel.
+                    String description = "Media playback controls";
+                    int importance = NotificationManager.IMPORTANCE_MIN;
+                    NotificationChannel mChannel = new NotificationChannel(id, name, importance);
+                    // Configure the notification channel.
+                    mChannel.setDescription(description);
+                    mChannel.setShowBadge(false);
+                    mChannel.setLockscreenVisibility(Notification.VISIBILITY_PUBLIC);
+                    mNotificationManager.createNotificationChannel(mChannel);
+                }
 
-                android.support.v4.app.NotificationCompat.Builder builder = new android.support.v4.app.NotificationCompat.Builder(mService);
+
+                android.support.v4.app.NotificationCompat.Builder builder = new android.support.v4.app.NotificationCompat.Builder(mContext, CHANNEL_ID);
                 builder
                         .setContentTitle(mService.getAudioItem().mTitle)
                         .setContentText(mService.getAudioItem().mArtist)
@@ -117,23 +140,26 @@ import java.io.IOException;
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
+
             Intent mainActivity = new Intent(mService, MainActivity.class);
+
             mMainPendingIntent = PendingIntent.getActivity(mService, 0, mainActivity, 0);
             mRemoteViews = createRemoteView(R.layout.notification_player);
-            mNotificationBuilder = new NotificationCompat.Builder(mService);
+            mNotificationBuilder = new NotificationCompat.Builder(mContext,CHANNEL_ID);
             mNotificationBuilder.setSmallIcon(R.mipmap.ic_launcher)
                     .setOngoing(true)
                     .setContentIntent(mMainPendingIntent)
                     .setContent(mRemoteViews);
 
             Notification notification = mNotificationBuilder.build();
-            notification.priority = Notification.PRIORITY_MAX;
+            notification.priority = Notification.PRIORITY_LOW;
             notification.contentIntent = mMainPendingIntent;
             if (!isForeground) {
                 isForeground = true;
                 // 서비스를 Foreground 상태로 만든다
                 mService.startForeground(NOTIFICATION_PLAYER_ID, notification);
             }
+            mNotificationManager.notify(0,mNotificationBuilder.build());
         }
 
         @Override
@@ -187,11 +213,8 @@ import java.io.IOException;
             Picasso.with(mService).load(albumArtUri).error(R.drawable.empty_albumart).into(remoteViews, R.id.img_albumart, NOTIFICATION_PLAYER_ID, notification);
         }
 
-
-
-
         //오레오 버전 위한 notificaation 채널 생성
-        @RequiresApi(Build.VERSION_CODES.O)
+        @TargetApi(Build.VERSION_CODES.O)
         private void createChannel() {
             NotificationManager
                     mNotificationManager = (NotificationManager) mContext.getSystemService(Context.NOTIFICATION_SERVICE);
@@ -201,7 +224,7 @@ import java.io.IOException;
             CharSequence name = "Media playback";
             // The user-visible description of the channel.
             String description = "Media playback controls";
-            int importance = NotificationManager.IMPORTANCE_LOW;
+            int importance = NotificationManager.IMPORTANCE_MIN;
             NotificationChannel mChannel = new NotificationChannel(id, name, importance);
             // Configure the notification channel.
             mChannel.setDescription(description);

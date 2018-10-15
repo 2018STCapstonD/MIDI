@@ -1,6 +1,7 @@
 package com.midi.midi;
 
 import android.app.Service;
+import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
 import android.media.AudioManager;
@@ -21,6 +22,7 @@ import java.util.ArrayList;
 public class AudioService extends Service {
     private final IBinder mBinder = new AudioServiceBinder();
     private MediaPlayer mMediaPlayer;
+    private Context mContext;
     private boolean isPrepared;
     private DBHelper dbHelper;
     private NotificationPlayer mNotificationPlayer;
@@ -34,6 +36,7 @@ public class AudioService extends Service {
     @Override
     public void onCreate() {
         super.onCreate();
+        mContext = getApplicationContext();
         dbHelper = new DBHelper(getApplicationContext(), "played.db", null, 1);
         mMediaPlayer = new MediaPlayer();
         mMediaPlayer.setWakeMode(getApplicationContext(), PowerManager.PARTIAL_WAKE_LOCK);
@@ -72,7 +75,7 @@ public class AudioService extends Service {
             public void onSeekComplete(MediaPlayer mp) {
             }
         });
-        mNotificationPlayer = new NotificationPlayer(this);
+        mNotificationPlayer = new NotificationPlayer(this, mContext);
     }
 
     @Override
