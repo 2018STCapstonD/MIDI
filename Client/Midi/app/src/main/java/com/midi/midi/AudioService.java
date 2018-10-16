@@ -105,9 +105,9 @@ public class AudioService extends Service {
             } else if (CommandActions.FORWARD.equals(action)) {
                 forward();
             } else if (CommandActions.CLOSE.equals(action)) {
+                pause();
                 removeNotificationPlayer();
             }
-
         }
         return super.onStartCommand(intent, flags, startId);
     }
@@ -133,7 +133,6 @@ public class AudioService extends Service {
     private void removeNotificationPlayer() {
         if (mNotificationPlayer != null) {
             mNotificationPlayer.removeNotificationPlayer();
-            mMediaPlayer.stop();
         }
     }
 
