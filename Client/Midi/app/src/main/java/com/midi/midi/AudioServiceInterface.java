@@ -98,4 +98,10 @@ public class AudioServiceInterface {
         return null;
     }
 
+    public int getCurrentPosition(){
+        if(mService != null)
+            return mService.getCurrentPosition();
+        return 0;
+    }
+
 }
