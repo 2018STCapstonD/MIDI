@@ -107,6 +107,7 @@ public class AudioService extends Service {
             } else if (CommandActions.CLOSE.equals(action)) {
                 pause();
                 removeNotificationPlayer();
+                onDestroy();
             }
         }
         return super.onStartCommand(intent, flags, startId);
