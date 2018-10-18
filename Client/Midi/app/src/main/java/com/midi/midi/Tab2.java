@@ -29,6 +29,7 @@ public class Tab2 extends Fragment implements View.OnClickListener {
     private ImageButton mBtnPlayPause;
     private SeekBar seekBar;
     private TextView duration;
+    private TextView currentDuration;
     private int musicSec = 0;
 
     private SeekBarThread sbThread;
@@ -50,6 +51,7 @@ public class Tab2 extends Fragment implements View.OnClickListener {
         view.findViewById(R.id.forward).setOnClickListener(this);
         seekBar = (SeekBar) view.findViewById(R.id.seekbar);
         duration = (TextView) view.findViewById(R.id.duration);
+        currentDuration = (TextView) view.findViewById(R.id.currentDuration);
 
         seekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
@@ -121,6 +123,11 @@ public class Tab2 extends Fragment implements View.OnClickListener {
             Picasso.with(mContext).load(albumArtUri).error(R.drawable.empty_albumart).into(mImgAlbumArt);
             mTxtTitle.setText(audioItem.mTitle);
             seekBar.setMax((int)AudioApplication.getmInstance().getServiceInterface().getAudioItem().mDuration);
+            musicSec = (int)AudioApplication.getmInstance().getServiceInterface().getAudioItem().mDuration/1000;
+            if(musicSec%60 >= 10) {
+                duration.setText("0" + musicSec / 60 + ":" + musicSec % 60);
+            }else
+                duration.setText("0" + musicSec / 60 + ":0" + musicSec % 60);
             Log.e("****현재 음악 길이 : ",""+musicSec);
             seekBar.setProgress(0);
             sbThread = new SeekBarThread();
@@ -174,14 +181,14 @@ public class Tab2 extends Fragment implements View.OnClickListener {
                                 int sec = AudioApplication.getmInstance().getServiceInterface().getCurrentPosition()/1000;
                                 if(sec >= 60){
                                     if((sec%60) >= 10){
-                                        duration.setText(String.valueOf("0"+sec/60+":"+sec%60));
+                                        currentDuration.setText(String.valueOf("0"+sec/60+":"+sec%60));
                                     } else
-                                        duration.setText(String.valueOf("0"+sec/60+":0"+sec%60));
+                                        currentDuration.setText(String.valueOf("0"+sec/60+":0"+sec%60));
 
                                 } else if(sec >= 10){
-                                    duration.setText(String.valueOf("00:" + sec));
+                                    currentDuration.setText(String.valueOf("00:" + sec));
                                 } else
-                                    duration.setText(String.valueOf("00:0" + sec));
+                                    currentDuration.setText(String.valueOf("00:0" + sec));
 
                             }
                         });

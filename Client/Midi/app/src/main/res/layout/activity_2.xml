@@ -49,10 +49,18 @@
             android:layout_gravity="center"
             android:paddingBottom="5dp"
             android:orientation="horizontal">
+            <TextView
+                android:id="@+id/currentDuration"
+                android:layout_width="35dp"
+                android:layout_height="match_parent"
+                android:layout_gravity="right"
+                android:gravity="center"
+                android:text="03:00"
+                android:textSize="12sp" />
 
             <SeekBar
                 android:id="@+id/seekbar"
-                android:layout_width="290dp"
+                android:layout_width="258dp"
                 android:layout_height="wrap_content" />
             <TextView
                 android:id="@+id/duration"
