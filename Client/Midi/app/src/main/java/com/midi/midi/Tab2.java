@@ -7,16 +7,15 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.net.Uri;
-import android.os.Handler;
-import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.SeekBar;
 import android.widget.TextView;
 
 import com.squareup.picasso.Picasso;
@@ -28,7 +27,12 @@ public class Tab2 extends Fragment implements View.OnClickListener {
     private ImageView mImgAlbumArt;
     private TextView mTxtTitle;
     private ImageButton mBtnPlayPause;
+    private SeekBar seekBar;
+    private TextView duration;
+    private TextView currentDuration;
+    private int musicSec = 0;
 
+    private SeekBarThread sbThread;
 
     public Tab2(Context context) {
         mContext = context;
@@ -45,6 +49,29 @@ public class Tab2 extends Fragment implements View.OnClickListener {
         view.findViewById(R.id.rewind).setOnClickListener(this);
         mBtnPlayPause.setOnClickListener(this);
         view.findViewById(R.id.forward).setOnClickListener(this);
+        seekBar = (SeekBar) view.findViewById(R.id.seekbar);
+        duration = (TextView) view.findViewById(R.id.duration);
+        currentDuration = (TextView) view.findViewById(R.id.currentDuration);
+
+        seekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+            @Override
+            public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser){
+                if(!fromUser)
+                    seekBar.setProgress(AudioApplication.getmInstance().getServiceInterface().getCurrentPosition());
+                else
+                    AudioApplication.getmInstance().getServiceInterface().seek(seekBar.getProgress());
+            }
+
+            @Override
+            public void onStartTrackingTouch(SeekBar seekBar) {
+                sbThread.stopThread();
+            }
+
+            @Override
+            public void onStopTrackingTouch(SeekBar seekBar) {
+                sbThread.resumeThread();
+            }
+        });
 
         registerBroadcast();
         updateUI();
@@ -95,6 +122,16 @@ public class Tab2 extends Fragment implements View.OnClickListener {
             Uri albumArtUri = ContentUris.withAppendedId(Uri.parse("content://media/external/audio/albumart"), audioItem.mAlbumId);
             Picasso.with(mContext).load(albumArtUri).error(R.drawable.empty_albumart).into(mImgAlbumArt);
             mTxtTitle.setText(audioItem.mTitle);
+            seekBar.setMax((int)AudioApplication.getmInstance().getServiceInterface().getAudioItem().mDuration);
+            musicSec = (int)AudioApplication.getmInstance().getServiceInterface().getAudioItem().mDuration/1000;
+            if(musicSec%60 >= 10) {
+                duration.setText("0" + musicSec / 60 + ":" + musicSec % 60);
+            }else
+                duration.setText("0" + musicSec / 60 + ":0" + musicSec % 60);
+            Log.e("****현재 음악 길이 : ",""+musicSec);
+            seekBar.setProgress(0);
+            sbThread = new SeekBarThread();
+            sbThread.start();
         } else {
             mImgAlbumArt.setImageResource(R.drawable.empty_albumart);
             mTxtTitle.setText("재생중인 음악이 없습니다.");
@@ -111,5 +148,55 @@ public class Tab2 extends Fragment implements View.OnClickListener {
     public void unregisterBroadcast() {
         getActivity().unregisterReceiver(mBroadcastReceiver);
     }
-}
 
+    class SeekBarThread extends Thread{
+        private boolean stopFlag = false;
+        private boolean pauseFlag = false;
+
+        public synchronized void resumeThread() {
+            pauseFlag = false;
+            notify();
+        }
+        public void stopThread() {
+            stopFlag = true;
+        }
+        public void pause() {
+            pauseFlag = true;
+        }
+        @Override
+        public void run(){
+            try {
+                while(!stopFlag) {
+                    synchronized(this) {
+                        while(pauseFlag) {
+                            wait();
+                        }
+                    }
+                    while(!this.isInterrupted() && AudioApplication.getmInstance().getServiceInterface().isPlaying()){
+                        seekBar.setProgress(AudioApplication.getmInstance().getServiceInterface().getCurrentPosition());
+                        //duration.setText(musicSec/60 +" : "+musicSec%60);
+                        duration.post(new Runnable() {
+                            @Override
+                            public void run() {
+                                int sec = AudioApplication.getmInstance().getServiceInterface().getCurrentPosition()/1000;
+                                if(sec >= 60){
+                                    if((sec%60) >= 10){
+                                        currentDuration.setText(String.valueOf("0"+sec/60+":"+sec%60));
+                                    } else
+                                        currentDuration.setText(String.valueOf("0"+sec/60+":0"+sec%60));
+
+                                } else if(sec >= 10){
+                                    currentDuration.setText(String.valueOf("00:" + sec));
+                                } else
+                                    currentDuration.setText(String.valueOf("00:0" + sec));
+
+                            }
+                        });
+                    }
+                }
+            } catch(InterruptedException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+}
