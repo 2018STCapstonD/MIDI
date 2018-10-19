@@ -45,6 +45,7 @@ public class Tab3 extends Fragment {
     private BufferedReader socketIn;
     private PrintWriter socketOut;
     private ArrayList<String[]> musicList;
+    private ArrayList<String[]> recoList;
     private int port = 37771;
     private final String ip = "117.17.198.39";
     private long kakao_id;
@@ -74,7 +75,18 @@ public class Tab3 extends Fragment {
         mLayoutManager = new LinearLayoutManager(mContext); //확인필요
         mRecyclerView.setLayoutManager(mLayoutManager);
 
+        recoList = new ArrayList<>();
+        if(dbHelper.getRecoResult() != null)
+            recoList = dbHelper.getRecoResult();
+
+
         final ArrayList<RecommendMusic> recoMusicArrayList = new ArrayList<>();
+
+        if(recoList != null) {
+            for (int i = 0; i < recoList.size(); i++) {
+                recoMusicArrayList.add(new RecommendMusic(recoList.get(i)[0], recoList.get(i)[1], recoList.get(i)[2]));
+            }
+        }
 
         ImageButton sendDataBtn = (ImageButton) view.findViewById(R.id.sendDataBtn);
         sendDataBtn.setOnClickListener(new View.OnClickListener(){
@@ -90,6 +102,7 @@ public class Tab3 extends Fragment {
                     int totalCount = dbHelper.getTotalCount();
 
                     dbHelper.deleteReco();
+                    recoMusicArrayList.clear();
 
                     for(int i=0;i<musicList.size();i++){
                         String title = musicList.get(i)[0];
@@ -143,6 +156,10 @@ public class Tab3 extends Fragment {
             }
         });
         */
+
+        mRecoMusicAdapter = new RecommendMusicAdapter(recoMusicArrayList);
+        mRecyclerView.setAdapter(mRecoMusicAdapter);
+
         return view;
 
     }

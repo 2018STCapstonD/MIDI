@@ -6,6 +6,8 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
 
+import java.util.ArrayList;
+
 //데이터베이스 동작 클래스
 public class DBHelper extends SQLiteOpenHelper {
 
@@ -16,13 +18,12 @@ public class DBHelper extends SQLiteOpenHelper {
     @Override
     public void onCreate(SQLiteDatabase db) {
         //디비 생성
-        db.execSQL("CREATE TABLE PLAYED(_id INTEGER PRIMARY KEY AUTOINCREMENT, song_id LONG NOT NULL);");
-        db.execSQL("CREATE TABLE RECO(_id INTEGER PRIMARY KEY AUTOINCREMENT, title VARCHAR(20) NOT NULL, artist VARCHAR(20) NOT NULL, album VARCHAR(20) NOT NULL);");
+        db.execSQL("CREATE TABLE IF NOT EXISTS PLAYED(_id INTEGER PRIMARY KEY AUTOINCREMENT, song_id LONG NOT NULL);");
+        db.execSQL("CREATE TABLE IF NOT EXISTS RECO(_id INTEGER PRIMARY KEY AUTOINCREMENT, title VARCHAR(20) NOT NULL, artist VARCHAR(20) NOT NULL, album VARCHAR(20) NOT NULL);");
     }
 
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-
     }
 
     public void insertPlayed(long _id) {
@@ -77,14 +78,18 @@ public class DBHelper extends SQLiteOpenHelper {
     }
 
     //RECO 테이블의 title, album, artist 리턴
-    public String getRecoResult(){
+    public ArrayList<String[]> getRecoResult() {
         SQLiteDatabase db = getReadableDatabase();
-        String result = "";
-
+        ArrayList<String[]> result = new ArrayList<>();
         Cursor cursor = db.rawQuery("SELECT title, artist, album FROM RECO", null);
-        while (cursor.moveToNext()) {
-            // \t로 구분
-            result += cursor.getString(0) + "\t" + cursor.getString(1) + "\t" + cursor.getString(2);
+        if (cursor.getCount() > 0) {
+            while (cursor.moveToNext()) {
+                // \t로 구분
+                String title = cursor.getString(0);
+                String artist = cursor.getString(1);
+                String album = cursor.getString(2);
+                result.add(new String[]{title, artist, album});
+            }
         }
         return result;
     }
