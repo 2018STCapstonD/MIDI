@@ -13,6 +13,7 @@
         android:scaleType="fitXY"
         android:src="@drawable/empty_albumart"/>
 
+
     <TextView
         android:id="@+id/txt_title"
         android:layout_width="0dp"
@@ -46,8 +47,16 @@
 
     <ImageButton
         android:id="@+id/btn_close"
-        android:layout_width="30dp"
-        android:layout_height="30dp"
+        android:layout_width="15dp"
+        android:layout_height="15dp"
         android:background="@null"
-        android:src="@drawable/noti_close" />
+        android:src="@drawable/close" />
+
+    <ImageButton
+        android:id="@+id/emptybox"
+        android:layout_width="1dp"
+        android:layout_height="1dp"
+        android:background="@null" />
+
+
 </LinearLayout>

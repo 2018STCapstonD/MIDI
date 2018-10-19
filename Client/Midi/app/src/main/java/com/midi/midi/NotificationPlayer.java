@@ -92,12 +92,11 @@ public class NotificationPlayer {
                         .setContentText(mService.getAudioItem().mArtist)
                         .setLargeIcon(largIcon)
                         .setContentIntent(PendingIntent.getActivity(mService, 0, new Intent(mService, MainActivity.class), 0));
-
                 builder.addAction(new android.support.v4.app.NotificationCompat.Action(R.drawable.rewind, "", rewind));
                 builder.addAction(new android.support.v4.app.NotificationCompat.Action(mService.isPlaying() ? R.drawable.pause : R.drawable.play, "", togglePlay));
                 builder.addAction(new android.support.v4.app.NotificationCompat.Action(R.drawable.forward, "", forward));
                 builder.addAction(new android.support.v4.app.NotificationCompat.Action(R.drawable.close, "", close));
-                int[] actionsViewIndexs = new int[]{1,2,3};
+                int[] actionsViewIndexs = new int[]{0,1,2};
                 builder.setStyle(new android.support.v4.media.app.NotificationCompat.MediaStyle().setShowActionsInCompactView(actionsViewIndexs));
 
                 //android.support.v4 이용 mediastyle
