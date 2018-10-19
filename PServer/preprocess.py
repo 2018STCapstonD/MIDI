@@ -1,5 +1,6 @@
 import pandas as pd
 import os
+import subprocess
 
 f_path = "C:/Users/ITS_1/Documents/MIDI/PServer"
 #새로 받은 데이터 오픈

@@ -1,6 +1,5 @@
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
-import java.io.File;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
@@ -10,24 +9,59 @@ import java.net.Socket;
 import java.net.URISyntaxException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
-import java.util.Scanner;
+import java.util.Arrays;
 
 public class Server {
 	public static void main(String[] args) {
 		try {
 			ServerSocket ss;
+			//초 단위 실행
+			TrainThread trThread = new TrainThread(60);
+			trThread.start();
 			ss = new ServerSocket(37771);
 			System.out.println("Server wait...");
 			while(true) {
 				Socket sock = ss.accept();
-				TCPServerThread thr = new TCPServerThread(sock);
-				thr.start();
+				TCPServerThread srvThread = new TCPServerThread(sock);
+				srvThread.start();
 			}
-
 		} catch(IOException ex) {
 			ex.printStackTrace();
 		}
 	}
+}
+
+class TrainThread extends Thread{
+	private String path = null;
+	private int time = 0;
+	
+	public TrainThread(int time) {
+		//초단위
+		this.time = time*1000;
+	}
+
+	@Override
+	public void run() {
+		// TODO Auto-generated method stub
+		try {
+			while(true) {
+				path = Paths.get(this.getClass().getResource("").toURI()).toString();
+				ProcessBuilder pb = new ProcessBuilder("python",path +"\\..\\..\\PServer\\train.py");
+				pb.start();
+				System.out.println("Training...");
+				sleep(time);
+			}
+		} catch (URISyntaxException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} 
+	}
+	
 }
 
 class TCPServerThread extends Thread{
@@ -47,6 +81,7 @@ class TCPServerThread extends Thread{
 	}
 	public void run() {
 		try {
+			
 			path = Paths.get(this.getClass().getResource("").toURI()).toString();
 			bufRd = Files.newBufferedReader(Paths.get(path+"\\..\\..\\PServer\\userRecs.csv"));
 			bufWr = Files.newBufferedWriter(Paths.get(path+"\\..\\..\\PServer\\tempdata.csv"));
@@ -63,7 +98,7 @@ class TCPServerThread extends Thread{
 					int to_hash = (data[1]+data[2]).hashCode(); 
 					bufWr.write(s+"\t"+to_hash+"\n");
 					bufWr.flush();
-					System.out.println(s+"\n");
+					System.out.println(s);
 				}
 				kakao_id = data[0];
 				while((musicIn = bufRd.readLine()) != null) {
@@ -90,7 +125,7 @@ class TCPServerThread extends Thread{
 					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
-				ProcessBuilder pb = new ProcessBuilder("python",path +"\\..\\..\\PServer\\preprocess.py");
+				ProcessBuilder pb = new ProcessBuilder("python",path +"\\..\\..\\PServer\\preproceses.py");
 				pb.start();
 			}
 			catch(IOException e) {}
