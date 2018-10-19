@@ -1,7 +1,8 @@
 import pandas as pd
 import os
+import subprocess
 
-f_path = "C:/Users/ITS_1/Documents/MIDI/PServer";
+f_path = "C:/Users/ITS_1/Documents/MIDI/PServer"
 #새로 받은 데이터 오픈
 tempdf = pd.read_csv(f_path+'/tempdata.csv', sep = "\t", encoding = 'utf8', header='infer')
 

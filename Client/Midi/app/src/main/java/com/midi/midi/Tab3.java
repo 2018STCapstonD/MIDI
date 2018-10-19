@@ -84,19 +84,20 @@ public class Tab3 extends Fragment {
                     String s = "";
                     clientSocket = new Socket();
                     clientSocket.connect(new InetSocketAddress(ip, port), 3000);
+                    clientSocket.setSendBufferSize(1024);
                     socketIn = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
                     socketOut = new PrintWriter(clientSocket.getOutputStream(), true);
                     int totalCount = dbHelper.getTotalCount();
 
                     for(int i=0;i<musicList.size();i++){
-                        String title = musicList.get(i)[0].replace("%","%%");
-                        String album = musicList.get(i)[1].replace("%","%%");
-                        String artist = musicList.get(i)[2].replace("%","%%");
-                        String _id = musicList.get(i)[3].replace("%","%%");
+                        String title = musicList.get(i)[0];
+                        String album = musicList.get(i)[1];
+                        String artist = musicList.get(i)[2];
+                        String _id = musicList.get(i)[3];
 
-                        int playedCount = dbHelper.getPlayedCount(Long.valueOf(_id));
+                        int rating = (int)(Math.random()*1000); //dbHelper.getPlayedCount(Long.valueOf(_id));
 
-                        double rating = Math.random() * 4 + 1;
+                        //double rating = Math.random() * 4 + 1;
                         //double rating = 100 * playedCount/totalCount;
 
                         socketOut.println(kakao_id + "\t" + title + "\t" + album + "\t" + artist + "\t" + rating);
@@ -130,15 +131,17 @@ public class Tab3 extends Fragment {
             }
         });
 
-        Button withdrawBtn = (Button) view.findViewById(R.id.withdrawBtn);
+        //Button withdrawBtn = (Button) view.findViewById(R.id.withdrawBtn);
+        /* 탈퇴버튼 임시제거
         withdrawBtn.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View v) {
                 onClickUnlink();
             }
         });
-
+        */
         return view;
+
     }
 
 
