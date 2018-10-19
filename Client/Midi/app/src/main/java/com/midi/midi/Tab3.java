@@ -89,6 +89,8 @@ public class Tab3 extends Fragment {
                     socketOut = new PrintWriter(clientSocket.getOutputStream(), true);
                     int totalCount = dbHelper.getTotalCount();
 
+                    dbHelper.deleteReco();
+
                     for(int i=0;i<musicList.size();i++){
                         String title = musicList.get(i)[0];
                         String album = musicList.get(i)[1];
@@ -111,6 +113,7 @@ public class Tab3 extends Fragment {
                         Log.e("title : ", title);
                         Log.e("artist : ", artist);
                         Log.e("album : ", album);
+                        dbHelper.insertReco(title,artist,album);
                         recoMusicArrayList.add(new RecommendMusic(title, artist, album));
                     }
                     myHandler = new MyHandler();
