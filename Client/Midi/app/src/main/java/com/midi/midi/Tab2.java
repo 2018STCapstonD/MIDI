@@ -52,6 +52,8 @@ public class Tab2 extends Fragment implements View.OnClickListener {
         seekBar = (SeekBar) view.findViewById(R.id.seekbar);
         duration = (TextView) view.findViewById(R.id.duration);
         currentDuration = (TextView) view.findViewById(R.id.currentDuration);
+        sbThread = new SeekBarThread();
+        sbThread.start();
 
         seekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
@@ -64,7 +66,7 @@ public class Tab2 extends Fragment implements View.OnClickListener {
 
             @Override
             public void onStartTrackingTouch(SeekBar seekBar) {
-                sbThread.stopThread();
+                sbThread.pause();
             }
 
             @Override
@@ -114,11 +116,14 @@ public class Tab2 extends Fragment implements View.OnClickListener {
     private void updateUI() {
         if (AudioApplication.getmInstance().getServiceInterface().isPlaying()) {
             mBtnPlayPause.setImageResource(R.drawable.pause);
+            sbThread.resumeThread();
         } else {
             mBtnPlayPause.setImageResource(R.drawable.play);
+            sbThread.pause();
         }
         AudioAdapter.AudioItem audioItem = AudioApplication.getmInstance().getServiceInterface().getAudioItem();
         if (audioItem != null) {
+            seekBar.setProgress(0);
             Uri albumArtUri = ContentUris.withAppendedId(Uri.parse("content://media/external/audio/albumart"), audioItem.mAlbumId);
             Picasso.with(mContext).load(albumArtUri).error(R.drawable.empty_albumart).into(mImgAlbumArt);
             mTxtTitle.setText(audioItem.mTitle);
@@ -129,9 +134,6 @@ public class Tab2 extends Fragment implements View.OnClickListener {
             }else
                 duration.setText("0" + musicSec / 60 + ":0" + musicSec % 60);
             Log.e("****현재 음악 길이 : ",""+musicSec);
-            seekBar.setProgress(0);
-            sbThread = new SeekBarThread();
-            sbThread.start();
         } else {
             mImgAlbumArt.setImageResource(R.drawable.empty_albumart);
             mTxtTitle.setText("재생중인 음악이 없습니다.");
@@ -152,6 +154,7 @@ public class Tab2 extends Fragment implements View.OnClickListener {
     class SeekBarThread extends Thread{
         private boolean stopFlag = false;
         private boolean pauseFlag = false;
+        private int position = 0;
 
         public synchronized void resumeThread() {
             pauseFlag = false;
@@ -173,12 +176,13 @@ public class Tab2 extends Fragment implements View.OnClickListener {
                         }
                     }
                     while(!this.isInterrupted() && AudioApplication.getmInstance().getServiceInterface().isPlaying()){
-                        seekBar.setProgress(AudioApplication.getmInstance().getServiceInterface().getCurrentPosition());
+                        position = AudioApplication.getmInstance().getServiceInterface().getCurrentPosition();
+                        seekBar.setProgress(position);
                         //duration.setText(musicSec/60 +" : "+musicSec%60);
                         duration.post(new Runnable() {
                             @Override
                             public void run() {
-                                int sec = AudioApplication.getmInstance().getServiceInterface().getCurrentPosition()/1000;
+                                int sec = position/1000;
                                 if(sec >= 60){
                                     if((sec%60) >= 10){
                                         currentDuration.setText(String.valueOf("0"+sec/60+":"+sec%60));
