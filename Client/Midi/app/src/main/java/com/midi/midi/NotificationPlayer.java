@@ -76,7 +76,7 @@ public class NotificationPlayer {
                     CharSequence name = "Media playback";
                     // The user-visible description of the channel.
                     String description = "Media playback controls";
-                    int importance = NotificationManager.IMPORTANCE_MIN;
+                    int importance = NotificationManager.IMPORTANCE_DEFAULT;
                     NotificationChannel mChannel = new NotificationChannel(id, name, importance);
                     // Configure the notification channel.
                     mChannel.setDescription(description);
@@ -212,25 +212,6 @@ public class NotificationPlayer {
             Picasso.with(mService).load(albumArtUri).error(R.drawable.empty_albumart).into(remoteViews, R.id.img_albumart, NOTIFICATION_PLAYER_ID, notification);
         }
 
-        //오레오 버전 위한 notificaation 채널 생성
-        @TargetApi(Build.VERSION_CODES.O)
-        private void createChannel() {
-            NotificationManager
-                    mNotificationManager = (NotificationManager) mContext.getSystemService(Context.NOTIFICATION_SERVICE);
-            // The id of the channel.
-            String id = CHANNEL_ID;
-            // The user-visible name of the channel.
-            CharSequence name = "Media playback";
-            // The user-visible description of the channel.
-            String description = "Media playback controls";
-            int importance = NotificationManager.IMPORTANCE_MIN;
-            NotificationChannel mChannel = new NotificationChannel(id, name, importance);
-            // Configure the notification channel.
-            mChannel.setDescription(description);
-            mChannel.setShowBadge(false);
-            mChannel.setLockscreenVisibility(Notification.VISIBILITY_PUBLIC);
-            mNotificationManager.createNotificationChannel(mChannel);
-        }
 
 
     }
