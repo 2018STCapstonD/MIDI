@@ -27,3 +27,4 @@ PServer/.idea/PServer.iml
 PServer/.idea/workspace.xml
 Client/Midi/.idea/encodings.xml
 PServer/model/
+Client/Midi/app/KeyStore/midi_keystore.jks
