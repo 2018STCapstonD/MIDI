@@ -48,5 +48,3 @@ public class SplashActivity extends Activity {
 
 
 }
-
-//* https://blog.naver.com/hg1286/220528368750
