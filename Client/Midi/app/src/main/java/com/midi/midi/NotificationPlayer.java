@@ -76,7 +76,7 @@ public class NotificationPlayer {
                     CharSequence name = "Media playback";
                     // The user-visible description of the channel.
                     String description = "Media playback controls";
-                    int importance = NotificationManager.IMPORTANCE_DEFAULT;
+                    int importance = NotificationManager.IMPORTANCE_LOW;
                     NotificationChannel mChannel = new NotificationChannel(id, name, importance);
                     // Configure the notification channel.
                     mChannel.setDescription(description);
@@ -151,7 +151,7 @@ public class NotificationPlayer {
                     .setContent(mRemoteViews);
 
             Notification notification = mNotificationBuilder.build();
-            notification.priority = Notification.PRIORITY_LOW;
+            notification.priority = Notification.PRIORITY_MIN;
             notification.contentIntent = mMainPendingIntent;
             if (!isForeground) {
                 isForeground = true;
@@ -165,7 +165,7 @@ public class NotificationPlayer {
         protected Notification doInBackground(Void... params) {
             mNotificationBuilder.setContent(mRemoteViews);
             mNotificationBuilder.setContentIntent(mMainPendingIntent);
-            mNotificationBuilder.setPriority(Notification.PRIORITY_MAX);
+            mNotificationBuilder.setPriority(Notification.PRIORITY_MIN);
             Notification notification = mNotificationBuilder.build();
             updateRemoteView(mRemoteViews, notification);
             return notification;

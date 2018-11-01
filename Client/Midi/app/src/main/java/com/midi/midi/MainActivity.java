@@ -61,7 +61,7 @@ public class MainActivity extends AppCompatActivity {
             setContentView(R.layout.activity_swipe);
 
             mContext = getApplicationContext();
-            dbHelper = new DBHelper(mContext, "played.db", null, 4);
+            dbHelper = new DBHelper(mContext, "reco.db", null, 1);
             mAdapter = new AudioAdapter(mContext, null);
 
 
